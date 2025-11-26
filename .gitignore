@@ -1,0 +1,128 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+
+# COMPAS specific
+COMPAS_Output*/
+output*/
+src/COMPAS
+src/bin/
+src/build/
+src/obj/
+
+# Data directories
+compas_ensemble_output/
+gwtc4_data/
+experiments/
+my_results/
+
+# Model outputs
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# Logs
+logs/
+*.log
+runs/
+tensorboard/
+wandb/
+
+# Results
+falsification_results/
+results/
+plots/
+figures/
+
+# Temporary files
+*.tmp
+
+# HDF5 files (large data)
+*.h5
+*.hdf5
+
+# Compressed files
+*.zip
+*.tar.gz
+*.tar
+
+# Documentation builds
+docs/_build/
+*_build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+test_artifacts/
+
+# Environment
+.env
+.env.local
+
+# LaTeX
+*.aux
+*.toc
+*.bbl
+*.blg
+*.pdf
+*.eps
+*.png
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+

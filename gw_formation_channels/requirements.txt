@@ -1,0 +1,65 @@
+# Physics-Informed Deep Learning for GW Formation Channel Inference
+# Requirements for ASTROTHESIS Project - Astronomy Club at UCSD
+
+# Core Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+h5py>=3.8.0
+
+# Astronomy and Astrophysics
+astropy>=5.2.0
+
+# Machine Learning and Inference
+scikit-learn>=1.2.0
+# sbi>=0.22.0  # Simulation-Based Inference (optional, for advanced features)
+
+# Data Processing
+pyyaml>=6.0
+tqdm>=4.65.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Logging and Experiment Tracking
+tensorboard>=2.13.0
+# wandb>=0.15.0  # Optional: Weights & Biases for experiment tracking
+
+# Utilities
+python-dotenv>=1.0.0
+pathlib>=1.0.1
+
+# Development and Testing
+pytest>=7.3.0
+pytest-cov>=4.1.0
+black>=23.3.0
+flake8>=6.0.0
+isort>=5.12.0
+
+# Documentation
+sphinx>=6.2.0
+sphinx-rtd-theme>=1.2.0
+nbsphinx>=0.9.0
+
+# Jupyter (for notebooks)
+jupyter>=1.0.0
+ipykernel>=6.23.0
+ipywidgets>=8.0.0
+
+# COMPAS Python Utils (already available in project)
+# Local COMPAS installation at: /Users/josephrodriguez/ASTROTHESIS/COMPAS
+
+# Optional: Additional population synthesis codes
+# COSMIC - pip install cosmic-popsynth
+# SEVN - custom installation required
+
+# Note: For CUDA support, install PyTorch with CUDA:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+
+# Note: For Apple Silicon (M1/M2/M3), PyTorch has native MPS support
+

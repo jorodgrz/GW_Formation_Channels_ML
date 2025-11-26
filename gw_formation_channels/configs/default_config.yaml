@@ -1,0 +1,132 @@
+# Default Configuration for Physics-Informed GW Formation Channel Inference
+# Astronomy Club at UCSD - ASTROTHESIS Project
+
+# COMPAS Ensemble Configuration
+compas:
+  binary_path: "/Users/josephrodriguez/ASTROTHESIS/COMPAS/src/bin/COMPAS"
+  output_dir: "./compas_ensemble_output"
+  n_systems_per_run: 100000
+  n_alpha_points: 10
+  use_sparse_grid: false
+  
+  # Parameter ranges for ensemble
+  parameters:
+    alpha_ce_min: 0.1
+    alpha_ce_max: 5.0
+    lambda_ce_values: [0.05, 0.1, 0.5, 1.0]
+    kick_sigma_values: [150, 217, 300]
+    metallicity_values: [0.0001, 0.001, 0.0142, 0.02]
+    mass_transfer_fa_values: [0.25, 0.5, 0.75]
+
+# Model Architecture Configuration
+model:
+  n_codes: 3  # Number of population synthesis codes (COMPAS, COSMIC, SEVN)
+  input_dim: 128  # Dimension of pop synth features
+  latent_dim: 64  # Latent space dimension
+  obs_dim: 10  # Dimension of GW observables
+  n_channels: 4  # Number of formation channels
+  
+  # Encoder configuration
+  encoder:
+    hidden_dims: [256, 128]
+    dropout: 0.1
+  
+  # Attention configuration
+  attention:
+    n_heads: 8
+    dropout: 0.1
+  
+  # Classifier configuration
+  classifier:
+    hidden_dims: [128, 64]
+    dropout: 0.5  # High dropout for MC sampling
+    n_mc_samples: 20
+
+# Training Configuration
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  n_epochs: 100
+  
+  # Loss weights
+  loss_weights:
+    classification: 1.0
+    kl_divergence: 0.01
+    domain_adaptation: 0.5
+    aleatoric: 0.1
+  
+  # Optimization
+  optimizer: "Adam"
+  scheduler: "CosineAnnealingLR"
+  scheduler_params:
+    T_max: 100
+    eta_min: 0.00001
+  
+  # Gradient clipping
+  clip_grad_norm: 1.0
+  
+  # Checkpointing
+  checkpoint_dir: "./checkpoints"
+  save_every: 10
+  early_stopping_patience: 20
+
+# Simulation-Based Inference Configuration
+sbi:
+  n_simulations: 10000
+  n_posterior_samples: 10000
+  n_epochs: 100
+  batch_size: 256
+  learning_rate: 0.001
+  
+  # Prior configuration
+  prior:
+    bandwidth: 0.1
+    kernel: "gaussian"
+
+# GWTC-4 Data Configuration
+gwtc4:
+  data_path: "./gwtc4_data/GWTC-4_posteriors.h5"
+  catalog_file: null
+  bbh_only: true
+  max_events: null  # Load all events
+  n_posterior_samples: 1000
+  summary_stat: "median"
+  cosmology: "Planck18"
+
+# Falsification Testing Configuration
+falsification:
+  output_dir: "./falsification_results"
+  
+  # Criterion 1: Epistemic > Observational
+  criterion_1:
+    threshold: 0.5  # 50% of events
+    save_plots: true
+  
+  # Criterion 2: α_CE Correlation
+  criterion_2:
+    min_correlation: 0.5
+    save_plots: true
+    correlation_method: "spearman"
+
+# Computational Configuration
+computation:
+  device: "cuda"  # cuda, cpu, mps (Apple Silicon)
+  num_workers: 4
+  pin_memory: true
+  seed: 42
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  log_dir: "./logs"
+  log_file: "training.log"
+  tensorboard_dir: "./runs"
+
+# Experiment Configuration
+experiment:
+  name: "gw_formation_channels_v1"
+  description: "Physics-informed deep learning for GW formation channel inference"
+  tags: ["formation_channels", "compas", "gwtc4", "uncertainty_quantification"]
+  output_dir: "./experiments"
+

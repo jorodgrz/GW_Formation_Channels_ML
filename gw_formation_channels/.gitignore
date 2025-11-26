@@ -1,0 +1,93 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data directories
+compas_ensemble_output/
+gwtc4_data/
+experiments/
+test_data/
+
+# Model outputs
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# Logs
+logs/
+*.log
+runs/
+tensorboard/
+wandb/
+
+# Results
+falsification_results/
+results/
+plots/
+figures/
+
+# Temporary files
+*.tmp
+.DS_Store
+Thumbs.db
+
+# HDF5 files (large data)
+*.h5
+*.hdf5
+
+# Compressed files
+*.zip
+*.tar.gz
+*.tar
+
+# Documentation builds
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Environment
+.env
+.env.local
+
