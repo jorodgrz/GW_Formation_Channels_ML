@@ -180,14 +180,12 @@ class COMPASEnsembleGenerator:
             '--logfile-type', 'HDF5',
             '--rlof-printing', 'TRUE',
             '--evolve-unbound-systems', 'FALSE',  # Focus on bound DCOs
-            '--mass-transfer', 'TRUE',
             '--detailed-output', 'TRUE',  # Enable detailed CE tracking
             # Population properties
             '--initial-mass-function', 'KROUPA',
             '--semi-major-axis-distribution', 'FLATINLOG',
             # Physics options
             '--common-envelope-allow-main-sequence-survive', 'TRUE',
-            '--mass-loss-prescription', 'VINK2021',
         ]
         
         logger.info(f"Running: {run_id}")
@@ -342,6 +340,18 @@ def main():
         action='store_true',
         help='Run only first 3 parameter combinations for testing'
     )
+    parser.add_argument(
+        '--start-index',
+        type=int,
+        default=0,
+        help='Start index within the parameter grid (inclusive)'
+    )
+    parser.add_argument(
+        '--end-index',
+        type=int,
+        default=None,
+        help='End index within the parameter grid (exclusive). Defaults to full grid.'
+    )
     
     args = parser.parse_args()
     
@@ -362,6 +372,16 @@ def main():
     if args.test_run:
         logger.info("TEST MODE: Running only first 3 parameter combinations")
         grid_params = grid_params[:3]
+    else:
+        start = max(0, args.start_index)
+        end = len(grid_params) if args.end_index is None else min(len(grid_params), max(start, args.end_index))
+        if start != 0 or end != len(grid_params):
+            logger.info(f"Subselecting parameter grid indices [{start}:{end}) out of {len(grid_params)} total")
+        grid_params = grid_params[start:end]
+    
+    if len(grid_params) == 0:
+        logger.warning("No parameter combinations selected after slicing; exiting.")
+        return
     
     # Run ensemble
     generator.run_ensemble(grid_params)
