@@ -62,29 +62,25 @@ src/build/
 src/obj/
 
 # Data directories
-compas_ensemble_output/
-gwtc4_data/
-experiments/
+data/raw/
+data/processed/
+experiments/runs/
+results/logs/
+results/tables/falsification/
+results/figures/
+
+# Legacy artifacts
 my_results/
 
 # Model outputs
-checkpoints/
+results/logs/checkpoints/
 *.pth
 *.pt
 *.ckpt
 
 # Logs
-logs/
 *.log
-runs/
-tensorboard/
 wandb/
-
-# Results
-falsification_results/
-results/
-plots/
-figures/
 
 # Temporary files
 *.tmp

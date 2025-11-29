@@ -1,0 +1,171 @@
+# Default Configuration for Physics-Informed GW Formation Channel Inference
+# Astronomy Club at UCSD - ASTROTHESIS Project
+
+# Multi-Code Ensemble Configuration
+# Supports COMPAS, COSMIC, and SEVN (future)
+multi_code:
+  enabled: true
+  codes: ["compas", "cosmic"]  # List of codes to run
+  output_dir: "./experiments/runs/multi_code_ensemble_output"
+  n_systems_per_run: 100000
+  n_alpha_points: 10
+  use_sparse_grid: false
+  
+  # Harmonized parameters (mapped to code-specific names internally)
+  parameters:
+    alpha_ce_min: 0.1
+    alpha_ce_max: 5.0
+    lambda_ce_values: [0.05, 0.1, 0.5, 1.0]
+    kick_sigma_values: [150, 265, 350]  # km/s (harmonized across codes)
+    metallicity_values: [0.0001, 0.001, 0.0142, 0.02]
+    
+# COMPAS-Specific Configuration
+compas:
+  binary_path: "./simulators/compas/src/bin/COMPAS"
+  output_dir: "./experiments/runs/compas_ensemble_output"
+  n_systems_per_run: 100000
+  
+  # COMPAS-specific parameters
+  parameters:
+    mass_transfer_fa_values: [0.25, 0.5, 0.75]
+    
+# COSMIC-Specific Configuration
+cosmic:
+  output_dir: "./experiments/runs/cosmic_ensemble_output"
+  n_systems_per_run: 100000
+  
+  # COSMIC-specific parameters
+  parameters:
+    beta_values: [-2.0, -1.0, -0.5]  # Mass transfer efficiency exponent
+    bse_params:
+      hewind: 1.0
+      windflag: 3
+      nsflag: 3
+      mxns: 3.0
+      
+# SEVN-Specific Configuration (future)
+sevn:
+  enabled: false
+  output_dir: "./experiments/runs/sevn_ensemble_output"
+  n_systems_per_run: 100000
+
+# Model Architecture Configuration
+model:
+  n_codes: 3  # Number of population synthesis codes (COMPAS, COSMIC, SEVN)
+  input_dim: 128  # Dimension of pop synth features
+  latent_dim: 64  # Latent space dimension
+  obs_dim: 10  # Dimension of GW observables
+  n_channels: 4  # Number of formation channels
+  
+  # Encoder configuration
+  encoder:
+    hidden_dims: [256, 128]
+    dropout: 0.1
+  
+  # Attention configuration
+  attention:
+    n_heads: 8
+    dropout: 0.1
+  
+  # Classifier configuration
+  classifier:
+    hidden_dims: [128, 64]
+    dropout: 0.5  # High dropout for MC sampling
+    n_mc_samples: 20
+
+# Training Configuration
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  n_epochs: 100
+  
+  # Loss weights
+  loss_weights:
+    classification: 1.0
+    kl_divergence: 0.01
+    domain_adaptation: 0.5
+    aleatoric: 0.1
+  
+  # Optimization
+  optimizer: "Adam"
+  scheduler: "CosineAnnealingLR"
+  scheduler_params:
+    T_max: 100
+    eta_min: 0.00001
+  
+  # Gradient clipping
+  clip_grad_norm: 1.0
+  
+  # Checkpointing
+  checkpoint_dir: "./results/logs/checkpoints"
+  save_every: 10
+  early_stopping_patience: 20
+
+# Simulation-Based Inference Configuration
+sbi:
+  n_simulations: 10000
+  n_posterior_samples: 10000
+  n_epochs: 100
+  batch_size: 256
+  learning_rate: 0.001
+  
+  # Prior configuration
+  prior:
+    bandwidth: 0.1
+    kernel: "gaussian"
+
+# GWTC-4 Data Configuration
+gwtc4:
+  data_path: "./data/raw/GWTC-4_posteriors.h5"
+  catalog_file: null
+  bbh_only: true
+  max_events: null  # Load all events
+  n_posterior_samples: 1000
+  summary_stat: "median"
+  cosmology: "Planck18"
+
+# Dataset alignment configuration
+dataset:
+  code_order: ["compas", "cosmic", "sevn"]
+  slice_size: 256
+  include_simulation: true
+  synthetic_multiplier: 1.0
+  max_systems_per_code: 5000
+
+# Falsification Testing Configuration
+falsification:
+  output_dir: "./results/tables/falsification"
+  
+  # Criterion 1: Epistemic > Observational
+  criterion_1:
+    threshold: 0.5  # 50% of events
+    save_plots: true
+  
+  # Criterion 2: α_CE Correlation
+  criterion_2:
+    min_correlation: 0.5
+    save_plots: true
+    correlation_method: "spearman"
+
+# Computational Configuration
+computation:
+  device: "cuda"  # cuda, cpu, mps (Apple Silicon)
+  num_workers: 4
+  pin_memory: true
+  seed: 42
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  log_dir: "./results/logs/training"
+  log_file: "training.log"
+  tensorboard_dir: "./results/logs/tensorboard"
+
+# Experiment Configuration
+experiment:
+  name: "astrothesis_pipelines_v1"
+  description: "Physics-informed deep learning for GW formation channel inference"
+  tags: ["formation_channels", "compas", "gwtc4", "uncertainty_quantification"]
+  output_dir: "./experiments/runs"
+
