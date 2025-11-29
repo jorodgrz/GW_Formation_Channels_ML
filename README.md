@@ -1,4 +1,4 @@
-# ASTROTHESIS — Gravitational Wave Formation Channels Research
+# Gravitational Wave Formation Channels Research
 
 This repository contains research code for investigating gravitational-wave formation channels using population-synthesis simulators (COMPAS, COSMIC, SEVN planned) combined with physics-informed modeling, simulation-based inference (SBI), and domain-adaptation techniques.
 
