@@ -1,0 +1,46 @@
+Results of the calculations used for the analysis presented in the paper "The impact of the FMR and starburst galaxies on the (low-metallicity) cosmic star formation history" by Chruslinska, M., Nelemans, G., Boco, L., Lapi. A, 2021, MNRAS (2021)
+https://arxiv.org/abs/2109.06187
+If you use this data in your research please reference the above paper.
+
+The values in each file correspond to stellar mass density (comoving; Msun/Mpc^3) formed in a given 12+log(O/H) (columns) bin and between two redshifts (rows). The enclosed python script plot_SFRD_Z_z.py can be used to visualize the data. The attached Time_redshift_deltaT.dat is required to run the python script.
+
+File names follow the scheme given below: 
+[X][Y][Z]f14SB[SB_implementation]_FMR[nablaFMR0]_FOH_z_dM.dat 
+where the expressions within "[]" specify the model variation.
+
+X,Y and Z specify the SFMR, GSMF and MZR variation.
+X specifies the choice of the high mass part of the SFMR:
+    X=1 : moderate flattening (following Speagle+14)
+    X=2 : sharp flattening
+    X=3 : no flattening
+
+Y specifies the choice of the low mass end of the GSMF:
+    Y=0 : alpha_fix = -1.45
+    Y=1 : alpha_fix = alpha_fix(z)
+
+Z specifies the choice of the z~0 MZR:
+    Z=2 : KK04a
+    Z=4 : PP04
+    Z=6 : KK04b
+    Z=7 : S20
+
+SB_implementation specifies the description of the starburst galaxies (straburst fraction and the starburst sequence).
+    SB_implementation=Boco : the properties of starbursts are based on the studies of Sargent+12/Bethermin+12, as used in Boco+21.
+    SB_implementation=BiC : the properties of starbursts are based on the studies of Bisigello+18 and Caputi+17
+
+
+nablaFMR0 specifies the value of the parameter nabla_FMR0, describing the strength of the SFR-metallicity correlation in the high SFR, low mass regime. 
+Three values of the parameter are explored in the paper: 
+    nablaFMR0 = 170 -> nabla_FMR0=0.17 dex
+    nablaFMR0 = 270 -> nabla_FMR0=0.27 dex (fiducial choice)
+    nablaFMR0 = 300 -> nabla_FMR0=0.3 dex
+
+example: file 204f14SBBiC_FMR270_FOH_z_dM.dat corresponds to the model variation with PP04 z~0 MZR, SFMR with sharp flattening at high masses, non-evolving low mass end of the GSMF, starburst implementation following Bisigello+18 and Caputi+17 and nabla_FMR0=0.27
+
+Files containg results for the model variation with SFR-dependent strength of the SFR-metallicity correlation (discussed in the appendix C) are named as follows:
+
+[X][Y][Z]f14SB[SB_implementation]_FMR[nablaFMR0]_varN_-2_[logSFRnabla0]_FOH_z_dM.dat 
+
+where logSFRnabla is the log10(SFR) threshold above which FMR slope is fixed (either 0 or 1)
+
+

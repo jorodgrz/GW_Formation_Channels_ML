@@ -2,7 +2,7 @@
 # Astronomy Club at UCSD - ASTROTHESIS Project
 
 # Multi-Code Ensemble Configuration
-# Supports COMPAS, COSMIC, and SEVN (future)
+# Supports COMPAS, COSMIC, and POSYDON (future)
 multi_code:
   enabled: true
   codes: ["compas", "cosmic"]  # List of codes to run
@@ -43,7 +43,7 @@ cosmic:
       nsflag: 3
       mxns: 3.0
       
-# SEVN-Specific Configuration (future)
+# POSYDON-Specific Configuration (future)
 sevn:
   enabled: false
   output_dir: "./experiments/runs/sevn_ensemble_output"
@@ -51,7 +51,7 @@ sevn:
 
 # Model Architecture Configuration
 model:
-  n_codes: 3  # Number of population synthesis codes (COMPAS, COSMIC, SEVN)
+  n_codes: 3  # Number of population synthesis codes (COMPAS, COSMIC, POSYDON)
   input_dim: 128  # Dimension of pop synth features
   latent_dim: 64  # Latent space dimension
   obs_dim: 10  # Dimension of GW observables

@@ -3,12 +3,12 @@
 Unified Multi-Code Ensemble Generator
 
 This module provides a unified interface for generating ensembles across
-multiple population synthesis codes (COMPAS, COSMIC, SEVN) to quantify
+multiple population synthesis codes (COMPAS, COSMIC, POSYDON) to quantify
 epistemic uncertainty from stellar evolution model systematics.
 
 The key innovation is treating each code as a distinct Bayesian prior:
     p(θ, C) = p(C) p(θ|C)
-where C ∈ {COMPAS, COSMIC, SEVN} is the code identity.
+where C ∈ {COMPAS, COSMIC, POSYDON} is the code identity.
 """
 
 import json
@@ -26,6 +26,9 @@ from pipelines.ensemble_generation.compas.generate_ensemble import (
 )
 from pipelines.ensemble_generation.cosmic.generate_ensemble import (
     COSMICEnsembleGenerator,
+)
+from pipelines.ensemble_generation.posydon.generate_ensemble import (
+    POSYDONEnsembleGenerator,
 )
 
 # Configure logging
@@ -50,7 +53,7 @@ class PopSynthCode(Enum):
     """
     COMPAS = "compas"
     COSMIC = "cosmic"
-    SEVN = "sevn"  # To be implemented
+    POSYDON = "posydon"  # To be implemented
 
 
 class UnifiedEnsembleGenerator:
@@ -137,10 +140,12 @@ class UnifiedEnsembleGenerator:
                 )
                 logger.info(f"  Initialized COSMIC generator")
                 
-            elif code == PopSynthCode.SEVN:
-                # To be implemented
-                logger.warning(f"  SEVN not yet implemented")
-                raise NotImplementedError("SEVN integration coming soon")
+            elif code == PopSynthCode.POSYDON:
+                self.generators[code] = POSYDONEnsembleGenerator(
+                    output_base=str(code_output),
+                    n_systems_per_run=self.n_systems_per_run
+                )
+                logger.info(f"  Initialized POSYDON generator (requires grid setup)")
     
     def generate_harmonized_parameter_grid(
         self,

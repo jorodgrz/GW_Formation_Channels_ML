@@ -2,7 +2,7 @@
 
 This document details the end-to-end architecture for ASTROTHESIS, spanning population-synthesis ensemble generation, observational encoders, cross-modal alignment, simulation-based inference (SBI), and falsification criteria.
 
-> **Integration status (Nov 2025):** COMPAS ✅, COSMIC ✅, SEVN planned (API assessment complete, generator TBD).
+> **Integration status (Nov 2025):** COMPAS ✅, COSMIC ✅, POSYDON planned (API assessment complete, generator TBD).
 
 ---
 
@@ -10,7 +10,7 @@ This document details the end-to-end architecture for ASTROTHESIS, spanning popu
 
 ### A1. Ensemble Stellar-Evolution Priors
 
-- Incorporate **COMPAS + COSMIC + SEVN (planned)** as distinct conditional priors:
+- Incorporate **COMPAS + COSMIC + POSYDON (planned)** as distinct conditional priors:
 
   ```
   p(θ, C) = p(C) p(θ | C)
@@ -97,7 +97,7 @@ z_sim ≈ z_obs  in a common manifold.
 
 ### E3. Uncertainty Decomposition
 
-- **Epistemic:** variance across `p(θ | C, data)` for C ∈ {COMPAS, COSMIC, SEVN}.
+- **Epistemic:** variance across `p(θ | C, data)` for C ∈ {COMPAS, COSMIC, POSYDON}.
 - **Aleatoric:** posterior width conditioned on a given code and event.
 
 ---
@@ -146,6 +146,6 @@ If `ρ < 0.5`, CE physics does **not** explain channel degeneracy → reject the
 
 ## Summary
 
-The target system combines multi-code population synthesis (COMPAS, COSMIC, SEVN planned) as hierarchical Bayesian hyperpriors with a joint raw-strain and PE-parameter GW encoder, fused via cross-modal transformers to perform SBI using normalizing flows. Domain adaptation aligns simulated and real distributions through adversarial / OT / flow mapping, while attention-based interpretability extracts causal structure—specifically isolating α_CE as the primary driver of formation-channel diversity. The system quantifies epistemic uncertainty via cross-code disagreement and aleatoric uncertainty via raw-strain noise modeling, and the entire astrophysical hypothesis is rejected if either falsification criterion is triggered.
+The target system combines multi-code population synthesis (COMPAS, COSMIC, POSYDON planned) as hierarchical Bayesian hyperpriors with a joint raw-strain and PE-parameter GW encoder, fused via cross-modal transformers to perform SBI using normalizing flows. Domain adaptation aligns simulated and real distributions through adversarial / OT / flow mapping, while attention-based interpretability extracts causal structure—specifically isolating α_CE as the primary driver of formation-channel diversity. The system quantifies epistemic uncertainty via cross-code disagreement and aleatoric uncertainty via raw-strain noise modeling, and the entire astrophysical hypothesis is rejected if either falsification criterion is triggered.
 
 

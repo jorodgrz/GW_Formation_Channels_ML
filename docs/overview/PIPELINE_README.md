@@ -5,7 +5,7 @@ A sophisticated framework for quantifying astrophysical uncertainties in gravita
 **Institution:** UC San Diego 
 **Project:** ML Gravitational Wave
 
-**Research Question** Research Question: How can a physics-informed deep learning architecture use an ensemble of population synthesis codes (COMPAS, COSMIC, SEVN) as Bayesian priors to jointly perform simulation-based inference and domain adaptation on gravitational wave data, thereby quantifying both astrophysical model uncertainty (epistemic) and detector noise uncertainty (aleatoric) in formation-channel likelihoods? Specifically, the architecture will be falsified if: (1) ensemble epistemic uncertainty (mutual information across code predictions) exceeds observational uncertainty for >50% of GWTC-4 events, indicating that stellar evolution model systematics prevent meaningful channel inference regardless of domain adaptation; or (2) cross-modal attention weights fail to isolate common envelope efficiency (α_CE) as the primary driver of Channel I/IV degeneracy (rank correlation <0.5), contradicting the hypothesis that CE physics dominates formation-channel diversity.
+**Research Question** Research Question: How can a physics-informed deep learning architecture use an ensemble of population synthesis codes (COMPAS, COSMIC, POSYDON) as Bayesian priors to jointly perform simulation-based inference and domain adaptation on gravitational wave data, thereby quantifying both astrophysical model uncertainty (epistemic) and detector noise uncertainty (aleatoric) in formation-channel likelihoods? Specifically, the architecture will be falsified if: (1) ensemble epistemic uncertainty (mutual information across code predictions) exceeds observational uncertainty for >50% of GWTC-4 events, indicating that stellar evolution model systematics prevent meaningful channel inference regardless of domain adaptation; or (2) cross-modal attention weights fail to isolate common envelope efficiency (α_CE) as the primary driver of Channel I/IV degeneracy (rank correlation <0.5), contradicting the hypothesis that CE physics dominates formation-channel diversity.
 
 ---
 
@@ -20,7 +20,7 @@ This project implements a cutting-edge approach combining:
 
 ### Key Features
 
-1. **Multi-Code Ensemble**: Combines COMPAS, COSMIC, and SEVN population synthesis codes
+1. **Multi-Code Ensemble**: Combines COMPAS, COSMIC, and POSYDON population synthesis codes
 2. **Cross-Modal Attention**: Identifies which physics parameters (especially α_CE) drive formation channels
 3. **Domain Adaptation**: Bridges the gap between simulated populations and real GW observations
 4. **Uncertainty Decomposition**: Quantifies both reducible (epistemic) and irreducible (aleatoric) uncertainties
@@ -77,7 +77,7 @@ cd ../..
 ```
 ASTROTHESIS/
 ├── docs/                              # Overview, methods, operations, simulator notes
-├── simulators/                        # External codes (COMPAS, SEVN)
+├── simulators/                        # External codes (COMPAS, POSYDON planned)
 ├── pipelines/                         # Python package for ensembles + inference
 │   ├── ensemble_generation/
 │   ├── data_alignment/
@@ -217,7 +217,7 @@ Edit `configs/training/pipeline/default_config.yaml` to customize:
 ```yaml
 # Model architecture
 model:
-  n_codes: 3  # COMPAS, COSMIC, SEVN
+  n_codes: 3  # COMPAS, COSMIC, POSYDON
   latent_dim: 64
   n_channels: 4
 
@@ -301,7 +301,7 @@ This framework addresses these challenges by:
 
 - COMPAS: [Stevenson et al. 2017](https://ui.adsabs.harvard.edu/abs/2017NatCo...814906S)
 - COSMIC: [Breivik et al. 2020](https://ui.adsabs.harvard.edu/abs/2020ApJ...898...71B)
-- SEVN: [Spera et al. 2019](https://ui.adsabs.harvard.edu/abs/2019MNRAS.485..889S)
+- POSYDON: [Fragos et al. 2023](https://posydon.org)
 
 ### Formation Channels
 

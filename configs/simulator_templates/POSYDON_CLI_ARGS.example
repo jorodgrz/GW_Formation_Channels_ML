@@ -1,0 +1,28 @@
+# Example POSYDON CLI arguments file
+# Each non-empty, non-comment line is parsed with shlex.split and appended
+# to the `posydon-run-grid` command. Paths below are placeholders – replace
+# them with your local MESA/POSYDON configuration before running.
+
+--mesa-grid /Users/you/POSYDON/grid_params/defaults/grid_params.ini
+--grid-type fixed
+--output-directory /Users/you/ASTROTHESIS/experiments/runs/posydon_output
+--temporary-directory /Users/you/tmp/posydon_workspace
+
+--mesa-binary-executable /Users/you/POSYDON/bin/binary
+--mesa-binary-inlist-project /Users/you/POSYDON/grid_params/defaults/inlist_project
+--mesa-binary-inlist1 /Users/you/POSYDON/grid_params/defaults/inlist1
+--mesa-binary-inlist2 /Users/you/POSYDON/grid_params/defaults/inlist2
+
+--mesa-binary-history-columns /Users/you/POSYDON/grid_params/defaults/binary_history_columns.list
+--mesa-star-history-columns /Users/you/POSYDON/grid_params/defaults/star_history_columns.list
+--mesa-profile-columns /Users/you/POSYDON/grid_params/defaults/profile_columns.list
+
+# Uncomment and edit if you use custom star formation executables/inlists
+# --mesa-star1-executable /path/to/star1
+# --mesa-star2-executable /path/to/star2
+# --mesa-star1-inlist-project /path/to/star1_inlist_project
+# --mesa-star2-inlist-project /path/to/star2_inlist_project
+
+# Enable verbose logging if desired
+# --verbose
+

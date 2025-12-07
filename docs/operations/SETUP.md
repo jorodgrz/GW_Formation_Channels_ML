@@ -165,6 +165,18 @@ pip install --upgrade -r configs/infrastructure/requirements.txt
 - **Location:** `/opt/anaconda3/envs/gw_channels`
 - **Created:** November 26, 2025
 
+### POSYDON-Specific Environment
+
+POSYDON development uses a dedicated conda env spec at
+`configs/infrastructure/environment-posydon.yml`. Create and activate it with:
+
+```bash
+conda env create -f configs/infrastructure/environment-posydon.yml
+conda activate posydon_env
+```
+
+Use this environment only when working on POSYDON source or the new generator.
+
 ## COMPAS Integration
 
 The COMPAS binary evolution code is available at:
@@ -184,7 +196,7 @@ sys.path.append('/Users/josephrodriguez/ASTROTHESIS/simulators/compas')
 ```
 ASTROTHESIS/
 ├── docs/                       # Overview, methods, ops, simulator notes
-├── simulators/                 # External codes (COMPAS, SEVN)
+├── simulators/                 # External codes (COMPAS, POSYDON planned)
 ├── pipelines/                  # Python package for ensembles + inference
 │   ├── ensemble_generation/
 │   ├── data_alignment/

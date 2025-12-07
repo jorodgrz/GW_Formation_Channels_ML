@@ -40,7 +40,7 @@ Features implemented:
 Supports:
 - Running single codes independently
 - Running multiple codes simultaneously
-- SEVN placeholder (future implementation)
+- POSYDON placeholder (future implementation)
 
 ### 4. Configuration Updates
 **File**: `configs/training/pipeline/default_config.yaml`
@@ -189,8 +189,8 @@ docs/
 3. Develop cross-code comparison tools
 
 ### Medium Term
-1. Integrate SEVN as third code
-2. Full multi-code ensemble (COMPAS + COSMIC + SEVN)
+1. Integrate POSYDON as third code
+2. Full multi-code ensemble (COMPAS + COSMIC + POSYDON)
 3. Test falsification criteria with real GWTC-4 data
 
 ## Testing Status
@@ -237,7 +237,7 @@ docs/
 
 **This integration enables the first multi-code epistemic uncertainty quantification for GW formation channels.**
 
-By running COMPAS, COSMIC, and (future) SEVN with identical parameter grids, you can:
+By running COMPAS, COSMIC, and (future) POSYDON with identical parameter grids, you can:
 
 1. Quantify how much stellar evolution models disagree
 2. Determine if model uncertainty exceeds observational uncertainty

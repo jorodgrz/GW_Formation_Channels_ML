@@ -106,7 +106,7 @@ A comprehensive research framework combining population synthesis simulations wi
 
 ### 4. Uncertainty Decomposition
 - Separates epistemic (reducible) and aleatoric (irreducible)
-- Epistemic: From model choice (COMPAS vs COSMIC vs SEVN)
+- Epistemic: From model choice (COMPAS vs COSMIC vs POSYDON)
 - Aleatoric: From detector noise and intrinsic stochasticity
 - Critical for understanding inference limitations
 
@@ -156,7 +156,7 @@ A comprehensive research framework combining population synthesis simulations wi
 ```
 ASTROTHESIS/
 ├── docs/                         # Overview, methods, operations, simulator notes
-├── simulators/                   # External codes (COMPAS, SEVN)
+├── simulators/                   # External codes (COMPAS, POSYDON planned)
 ├── pipelines/                    # Python package (ensembles, alignment, inference)
 │   ├── ensemble_generation/
 │   ├── data_alignment/
@@ -259,7 +259,7 @@ else:
 ## Future Extensions
 
 ### Short Term
-1. Add COSMIC and SEVN population synthesis codes
+1. Add COSMIC and POSYDON population synthesis codes
 2. Train on real GWTC-4 data (not synthetic)
 3. Hyperparameter optimization
 4. Analysis notebooks for interpretation

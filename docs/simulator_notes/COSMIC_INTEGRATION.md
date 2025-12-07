@@ -259,7 +259,7 @@ This is normal for low-metallicity or extreme parameter combinations. COSMIC evo
 
 ## Next Steps
 
-1. **SEVN Integration**: Add SEVN as third code for even more robust epistemic uncertainty
+1. **POSYDON Integration**: Add POSYDON as third code for even more robust epistemic uncertainty
 2. **AWS Deployment**: Deploy COSMIC ensemble generation on AWS for faster production runs
 3. **Comparison Analysis**: Develop analysis notebooks comparing COMPAS vs COSMIC outputs
 4. **Training Integration**: Update training pipeline to load both COMPAS and COSMIC data

@@ -56,7 +56,7 @@ ipywidgets>=8.0.0
 
 # Optional: Additional population synthesis codes
 # COSMIC - pip install cosmic-popsynth
-# SEVN - custom installation required
+# POSYDON - see docs/simulator_notes/POSYDON_INTEGRATION.md
 
 # Note: For CUDA support, install PyTorch with CUDA:
 # pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118

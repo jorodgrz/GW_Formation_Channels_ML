@@ -20,7 +20,7 @@ class PhysicsInformedEncoder(nn.Module):
     """
     Encode population synthesis outputs into latent physics space
     
-    Each ensemble member (COMPAS, COSMIC, SEVN) gets its own encoder to
+    Each ensemble member (COMPAS, COSMIC, POSYDON) gets its own encoder to
     capture code-specific features before fusion.
     
     The encoder outputs mean and log_variance for variational inference,
@@ -364,7 +364,7 @@ class PhysicsInformedEnsembleModel(nn.Module):
     
     def __init__(
         self,
-        n_codes: int = 3,  # COMPAS, COSMIC, SEVN
+        n_codes: int = 3,  # COMPAS, COSMIC, POSYDON
         input_dim: int = 128,
         latent_dim: int = 64,
         obs_dim: int = 10,

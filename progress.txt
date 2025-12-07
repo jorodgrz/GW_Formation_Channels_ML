@@ -1,0 +1,12 @@
+Spin up AWS Batch/EC2 and finish the 40-combination COMPAS sparse grid, uploading metadata + HDF5s to S3, then syncing locally.
+(check) Run the full COSMIC sparse grid (10k systems per combo) to match COMPAS resolution, not just 100-system smoke tests.
+Implement UnifiedEnsembleGenerator.load_ensemble_for_training for COMPAS (and eventually COSMIC) and add a transformation step that emits pop_synth_inputs tensors the trainer/falsifier expect.
+(check)Download real GWTC-4 posteriors into data/raw/, wire the loader into a Dataset that pairs each event with matching ensemble slices, and create synthetic labels/domain labels for initial training if needed.
+Execute the training script end-to-end with logging + real checkpoints, then run FalsificationTester on the prepared catalog to populate results/tables/falsification.
+Add unit/integration tests (data loaders, ensemble runners, model forward pass, falsification metrics) so regressions surface quickly.
+
+
+Download the POSYDON interpolation grids via posydon-setup-pipeline --download-grids (needs ~25 GB free). This unblocks everything else.
+Run a 3×100-system smoke test once the grids are in place to verify the CLI wrapper, parameter mapping, and HDF5 outputs (Phase 4 of the integration plan).
+Finish the generator implementation tasks listed under “Open Tasks”: port the POSYDON population sampler, hook up the shared parameter grid + start/end index slicing, and emit metadata in the same schema used by COMPAS/COSMIC.
+Add tests and AWS automation updates: extend the multi-code smoke test to include POSYDON, then refresh the AWS runbooks/playbooks once you have timing benchmarks from the smoke test.
