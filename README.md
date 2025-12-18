@@ -4,11 +4,11 @@
 
 This repository contains research code for investigating gravitational-wave formation channels using population-synthesis simulators (COMPAS, COSMIC, POSYDON planned) combined with physics-informed modeling, simulation-based inference (SBI), and domain-adaptation techniques.
 
-**Project Scope:** Extensible research framework with staged components; designed to be falsifiable and ready for future extensions without implying missing work. Focus: elevate epistemic disagreement into a structured, physical object—localized in parameter/metallicity/observable space—and map it to specific simulator assumptions that fail.
+**Project Scope:** Extensible research framework with staged components; designed to be falsifiable and ready for future extensions without implying missing work. Focus: elevate epistemic disagreement into a structured, physical object, localized in parameter/metallicity/observable space, and map it to specific simulator assumptions that fail.
 
 ### Research Question
 
-How can a **physics-informed deep learning architecture** use an ensemble of **population-synthesis codes (COMPAS, COSMIC, POSYDON)** as **Bayesian priors** to jointly perform **simulation-based inference** and **domain adaptation** on **gravitational-wave data**, and—critically—treat epistemic disagreement as a structured, parameter-localizable, astrophysically informative signal (not just noise) that maps to specific failing assumptions, while also quantifying **aleatoric uncertainty** (detector noise) in **formation-channel likelihoods**?
+How can a **physics-informed deep learning architecture** use an ensemble of **population-synthesis codes (COMPAS, COSMIC, POSYDON)** as **Bayesian priors** to jointly perform **simulation-based inference** and **domain adaptation** on **gravitational-wave data**, and, critically, treat epistemic disagreement as a structured, parameter-localizable, astrophysically informative signal (not just noise) that maps to specific failing assumptions, while also quantifying **aleatoric uncertainty** (detector noise) in **formation-channel likelihoods**?
 
 **This framework is explicitly falsifiable.**
 - **Failure mode: Epistemic dominance.** If ensemble-based **mutual information across code predictions** exceeds **observational uncertainty** for **>50%** of **GWTC-4** events, stellar-evolution systematics dominate and formation-channel inference is unreliable.
@@ -121,7 +121,7 @@ The full multi-layer architecture, loss decomposition, and falsification workflo
 
 ## Why Multi-Code Matters
 
-Single-code population synthesis can understate model-systematic uncertainty; comparing COMPAS (rapid, high-volume), COSMIC (alternate rapid recipes), and POSYDON (planned detailed MESA grids) surfaces disagreement as epistemic signal. This framework treats simulators as priors, aligns their outputs, and measures mutual information across codes—maintaining physics interpretability rather than acting as a black-box ML pipeline.
+Single-code population synthesis can understate model-systematic uncertainty; comparing COMPAS (rapid, high-volume), COSMIC (alternate rapid recipes), and POSYDON (planned detailed MESA grids) surfaces disagreement as epistemic signal. This framework treats simulators as priors, aligns their outputs, and measures mutual information across codes, maintaining physics interpretability rather than acting as a black-box ML pipeline.
 
 Not a black-box: ML components are constrained by physics, and interpretability is a requirement, not an afterthought.
 
@@ -144,17 +144,17 @@ Not a black-box: ML components are constrained by physics, and interpretability 
 
 ## Documentation
 
-- [Quick Reference](docs/operations/QUICKREF.md) — Command palette & daily tasks
-- [Setup Guide](docs/operations/SETUP.md) — Environment provisioning and dependencies
-- [Quick Start](docs/operations/QUICKSTART.md) — 30-minute onboarding walkthrough
-- [Project Summary](docs/overview/PROJECT_SUMMARY.md) — Current status and implementation overview
-- [Scientific Positioning](docs/overview/SCIENTIFIC_POSITION.md) — Thesis, pillars, and epistemic framing
-- [Pipeline Overview](docs/overview/PIPELINE_README.md) — Comprehensive pipeline explanation with scientific context
-- [Architecture & Falsification Plan](docs/overview/ARCHITECTURE.md) — Full multi-code stack and formal tests
-- [COMPAS Information](docs/simulator_notes/COMPAS_Info.md) — Simulator build notes
-- [COSMIC Integration](docs/simulator_notes/COSMIC_INTEGRATION.md) — Usage guide & status
-- [POSYDON Integration](docs/simulator_notes/POSYDON_INTEGRATION.md) — Environment + roadmap
-- [AWS Cluster Playbook](docs/operations/AWS_CLUSTER.md) — Production COMPAS workflow
+- [Quick Reference](docs/operations/QUICKREF.md), Command palette & daily tasks
+- [Setup Guide](docs/operations/SETUP.md), Environment provisioning and dependencies
+- [Quick Start](docs/operations/QUICKSTART.md), 30-minute onboarding walkthrough
+- [Project Summary](docs/overview/PROJECT_SUMMARY.md), Current status and implementation overview
+- [Scientific Positioning](docs/overview/SCIENTIFIC_POSITION.md), Thesis, pillars, and epistemic framing
+- [Pipeline Overview](docs/overview/PIPELINE_README.md), Comprehensive pipeline explanation with scientific context
+- [Architecture & Falsification Plan](docs/overview/ARCHITECTURE.md), Full multi-code stack and formal tests
+- [COMPAS Information](docs/simulator_notes/COMPAS_Info.md), Simulator build notes
+- [COSMIC Integration](docs/simulator_notes/COSMIC_INTEGRATION.md), Usage guide & status
+- [POSYDON Integration](docs/simulator_notes/POSYDON_INTEGRATION.md), Environment + roadmap
+- [AWS Cluster Playbook](docs/operations/AWS_CLUSTER.md), Production COMPAS workflow
 
 ## Requirements
 
@@ -219,7 +219,7 @@ python -m pipelines.ensemble_generation.posydon.generate_ensemble \
 
 See [COSMIC Integration Guide](docs/simulator_notes/COSMIC_INTEGRATION.md) for details.
 
-**COMPAS Status:** Local macOS run aborted (Nov 26, 2025) - migrating to AWS  
+**COMPAS Status:** Local macOS run aborted (Nov 26, 2025), migrating to AWS  
 **COSMIC Status:** Fully operational on local macOS (Nov 26, 2025)
 
 ### Train Neural Network

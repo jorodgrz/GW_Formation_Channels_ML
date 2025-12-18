@@ -1,6 +1,6 @@
 # Project Implementation Summary
 
-**Purpose:** Current status snapshot and implementation overview—what's built, what's in progress, and where components live.  
+**Purpose:** Current status snapshot and implementation overview-what's built, what's in progress, and where components live.  
 **How to use:** Review this for project status before diving into code; see `PIPELINE_README.md` for scientific context and `README.md` for quick start.  
 **Back to README:** [`README.md`](../../README.md)
 
@@ -10,7 +10,7 @@
 
 Multi-code, physics-informed simulation-based inference framework for gravitational-wave formation-channel inference. Population-synthesis simulators (COMPAS, COSMIC, POSYDON planned) are treated as ensemble priors to quantify epistemic uncertainty. The pipeline performs domain adaptation to align simulations with GWTC-4 observations, applies neural density estimation for Bayesian inference, and includes explicit falsification tests that reject the model when simulator disagreement dominates or when expected physical drivers fail to emerge.
 
-**Institution:** UC San Diego - ASTROTHESIS  
+**Institution:** UC San Diego, ASTROTHESIS  
 **Status:** Active Development (December 2025)  
 **Stage:** Multi-code ensemble generation operational; SBI training loop functional; end-to-end inference and falsification pending full production runs.
 
@@ -40,10 +40,10 @@ Multi-code, physics-informed simulation-based inference framework for gravitatio
 - **Status:** End-to-end training functional with default config
 - **Architecture:** Event encoder, population aggregator, cross-modal attention, normalizing flow density estimator
 - **Features:** 
-  - Multi-objective loss (posterior likelihood, domain adaptation, uncertainty calibration)
-  - Checkpointing and TensorBoard logging
-  - Gradient clipping and learning rate scheduling
-  - YAML-driven configuration (`configs/training/pipeline/default_config.yaml`)
+ , Multi-objective loss (posterior likelihood, domain adaptation, uncertainty calibration)
+ , Checkpointing and TensorBoard logging
+ , Gradient clipping and learning rate scheduling
+ , YAML-driven configuration (`configs/training/pipeline/default_config.yaml`)
 - **Validation:** Runs to completion with synthetic data; ready for production ensembles
 
 #### 4. GWTC-4 Data Infrastructure
@@ -56,12 +56,12 @@ Multi-code, physics-informed simulation-based inference framework for gravitatio
 #### 5. Configuration & Documentation System
 - **Configs:** YAML-driven (`configs/training/`, `configs/infrastructure/`)
 - **Documentation:**
-  - `README.md` — Entry point with TL;DR, usage, falsification criteria
-  - `docs/overview/PIPELINE_README.md` — Comprehensive scientific pipeline explanation
-  - `docs/overview/ARCHITECTURE.md` — System architecture and falsification plan
-  - `docs/overview/SCIENTIFIC_POSITION.md` — Core thesis and pillars
-  - `docs/operations/SETUP.md`, `QUICKSTART.md`, `QUICKREF.md` — Setup and daily operations
-  - `docs/simulator_notes/` — Code-specific integration details (COMPAS, COSMIC, POSYDON)
+ , `README.md`, Entry point with TL;DR, usage, falsification criteria
+ , `docs/overview/PIPELINE_README.md`, Comprehensive scientific pipeline explanation
+ , `docs/overview/ARCHITECTURE.md`, System architecture and falsification plan
+ , `docs/overview/SCIENTIFIC_POSITION.md`, Core thesis and pillars
+ , `docs/operations/SETUP.md`, `QUICKSTART.md`, `QUICKREF.md`, Setup and daily operations
+ , `docs/simulator_notes/`, Code-specific integration details (COMPAS, COSMIC, POSYDON)
 - **Reproducibility:** Controlled seeds, metadata logging, artifact tracking in `experiments/runs/`
 
 ### In Progress
@@ -101,10 +101,10 @@ Multi-code, physics-informed simulation-based inference framework for gravitatio
 #### 1. POSYDON Integration
 - **Status:** CLI wrapper implemented; awaits grid assets and MESA executables
 - **Next Steps:**
-  - Download interpolation grids via `posydon-setup-pipeline --download-grids` (~25 GB)
-  - Run 3×100-system smoke test to verify parameter mapping and HDF5 outputs
-  - Extend multi-code generator to include POSYDON
-  - Update AWS runbooks with POSYDON timing benchmarks
+ , Download interpolation grids via `posydon-setup-pipeline --download-grids` (~25 GB)
+ , Run 3×100-system smoke test to verify parameter mapping and HDF5 outputs
+ , Extend multi-code generator to include POSYDON
+ , Update AWS runbooks with POSYDON timing benchmarks
 - **Timeline:** Targeted for Q1 2026 pending grid availability
 
 #### 2. Unit & Integration Tests
@@ -163,35 +163,35 @@ The pipeline uses three population-synthesis codes as ensemble priors:
 - **Real Data:** GWTC-4 posterior samples ingested from `data/raw/`
 - **Latent Embedding:** Encoder maps events → shared latent space (simulated + real)
 - **Adaptation Techniques:** 
-  - Adversarial discriminator (real vs. sim)
-  - Maximum Mean Discrepancy (MMD) loss
-  - Optional optimal transport alignment
+ , Adversarial discriminator (real vs. sim)
+ , Maximum Mean Discrepancy (MMD) loss
+ , Optional optimal transport alignment
 - **Goal:** Remove simulator-detector mismatch; align distributions in latent space
 
 ### Simulation-Based Inference (Neural Density Estimation)
 
 - **Architecture:**
-  - Event encoder (per-event summary)
-  - Population aggregator (set-based attention or pooling)
-  - Cross-modal attention (events ↔ hyperparameters θ)
-  - Normalizing flow density estimator (Neural Posterior Estimation)
+ , Event encoder (per-event summary)
+ , Population aggregator (set-based attention or pooling)
+ , Cross-modal attention (events ↔ hyperparameters θ)
+ , Normalizing flow density estimator (Neural Posterior Estimation)
 - **Training:**
-  - Simulated experiments: sample θ → generate population → label with θ
-  - Loss: maximize p(θ | data) under flow output
-  - Amortized: train once, infer instantly
+ , Simulated experiments: sample θ → generate population → label with θ
+ , Loss: maximize p(θ | data) under flow output
+ , Amortized: train once, infer instantly
 - **Outputs:** Posterior p(θ | GWTC-4) for hyperparameters + channel fractions
 
 ### Formation-Channel Inference
 
 - **Channels:**
-  - Isolated binary evolution (IB)
-  - Common-envelope dominant (CE)
-  - Chemically homogeneous evolution (CHE)
-  - Dynamical (globular/nuclear clusters, GC/NSC)
-  - Other subchannels (triples, primordial, etc.)
+ , Isolated binary evolution (IB)
+ , Common-envelope dominant (CE)
+ , Chemically homogeneous evolution (CHE)
+ , Dynamical (globular/nuclear clusters, GC/NSC)
+ , Other subchannels (triples, primordial, etc.)
 - **Inference Modes:**
-  - Population-level: branching fractions per channel (e.g., 60% IB, 30% dynamical, 10% CHE)
-  - Per-event: probability distribution over channels for each GW event
+ , Population-level: branching fractions per channel (e.g., 60% IB, 30% dynamical, 10% CHE)
+ , Per-event: probability distribution over channels for each GW event
 - **Interpretability:** Cross-modal attention highlights which events inform which channels
 
 ### Epistemic & Aleatoric Uncertainty Decomposition
@@ -223,14 +223,14 @@ The pipeline uses three population-synthesis codes as ensemble priors:
 - **Posteriors:** θ (α_CE, kicks, winds, etc.) with credible intervals
 - **Channel Fractions:** Branching ratios + per-event probabilities
 - **Figures:**
-  - Mass/spin/redshift distributions (model vs. data)
-  - Corner plots (θ joint/marginal posteriors)
-  - Attention heatmaps (event × parameter importance)
+ , Mass/spin/redshift distributions (model vs. data)
+ , Corner plots (θ joint/marginal posteriors)
+ , Attention heatmaps (event × parameter importance)
 - **Tables:**
-  - Hyperparameter constraints (median + 90% CI)
-  - Channel fractions (% per channel with uncertainties)
-  - Per-event classifications (event ID, channel probabilities)
-  - Falsification verdicts (pass/fail + MI/correlation values)
+ , Hyperparameter constraints (median + 90% CI)
+ , Channel fractions (% per channel with uncertainties)
+ , Per-event classifications (event ID, channel probabilities)
+ , Falsification verdicts (pass/fail + MI/correlation values)
 - **Exports:** CSV/LaTeX for publication
 
 ---
@@ -315,14 +315,14 @@ python -m pipelines.inference_and_falsification.inference.sbi_framework
 
 ## Next Milestones
 
-1. **Deploy COMPAS Production Grid on AWS** — Run 40-combination sparse grid, sync to local
-2. **Implement Unified Ensemble Loader** — Transform HDF5 → training tensors
-3. **Execute End-to-End Training** — Full production run with COMPAS + COSMIC ensembles
-4. **Run Falsification Tests** — Populate `results/tables/falsification`
-5. **Cross-Code MI Study** — Quantify epistemic uncertainty across codes
-6. **Generate GWTC-4 Event-Level Outputs** — Channel posteriors, figures, tables
-7. **Activate POSYDON** — Download grids, validate, integrate into multi-code pipeline
-8. **Prepare Publication Outputs** — Draft figures/tables for preprint
+1. **Deploy COMPAS Production Grid on AWS**, Run 40-combination sparse grid, sync to local
+2. **Implement Unified Ensemble Loader**, Transform HDF5 → training tensors
+3. **Execute End-to-End Training**, Full production run with COMPAS + COSMIC ensembles
+4. **Run Falsification Tests**, Populate `results/tables/falsification`
+5. **Cross-Code MI Study**, Quantify epistemic uncertainty across codes
+6. **Generate GWTC-4 Event-Level Outputs**, Channel posteriors, figures, tables
+7. **Activate POSYDON**, Download grids, validate, integrate into multi-code pipeline
+8. **Prepare Publication Outputs**, Draft figures/tables for preprint
 
 ---
 
@@ -330,15 +330,15 @@ python -m pipelines.inference_and_falsification.inference.sbi_framework
 
 For comprehensive explanation of the pipeline's scientific motivation, technical implementation, and why each stage is both realistic and novel, see:
 
-- **[Pipeline Overview](PIPELINE_README.md)** — Full narrative with realism vs. novelty breakdown
-- **[Architecture](ARCHITECTURE.md)** — System design and falsification criteria
-- **[Scientific Position](SCIENTIFIC_POSITION.md)** — Core thesis and pillars
+- **[Pipeline Overview](PIPELINE_README.md)**, Full narrative with realism vs. novelty breakdown
+- **[Architecture](ARCHITECTURE.md)**, System design and falsification criteria
+- **[Scientific Position](SCIENTIFIC_POSITION.md)**, Core thesis and pillars
 
 For operational details:
 
-- **[README](../../README.md)** — Entry point with quick start
-- **[Setup Guide](../operations/SETUP.md)** — Environment provisioning
-- **[AWS Cluster](../operations/AWS_CLUSTER.md)** — Production COMPAS workflow
+- **[README](../../README.md)**, Entry point with quick start
+- **[Setup Guide](../operations/SETUP.md)**, Environment provisioning
+- **[AWS Cluster](../operations/AWS_CLUSTER.md)**, Production COMPAS workflow
 
 ---
 
@@ -357,5 +357,5 @@ For operational details:
 **Institution:** UC San Diego  
 **Project:** ASTROTHESIS
 
-**Cite COMPAS:** Stevenson et al. (2017) — https://arxiv.org/abs/1704.01352  
+**Cite COMPAS:** Stevenson et al. (2017), https://arxiv.org/abs/1704.01352  
 **Cite This Repo (pre-publication):** "ASTROTHESIS (2025), multi-code GW formation-channel inference framework, UC San Diego." DOI pending preprint release.

@@ -10,13 +10,13 @@ Epistemic disagreement is treated as a structured, parameter-localizable, astrop
 
 ## Core Thesis (One Sentence)
 
-“Epistemic disagreement across population-synthesis codes is structured, parameter-localizable, and astrophysically informative — not just noise — and can be mapped onto specific physical assumptions that fail.”
+“Epistemic disagreement across population-synthesis codes is structured, parameter-localizable, and astrophysically informative, not just noise, and can be mapped onto specific physical assumptions that fail.”
 
 Everything below serves this claim.
 
 ---
 
-## Pillar 1 — Turn Code Disagreement Into a Physical Map
+## Pillar 1, Turn Code Disagreement Into a Physical Map
 
 **What this does:** Instead of one scalar mutual-information verdict, construct a disagreement phase space:
 
@@ -27,7 +27,7 @@ Where:
 - z: redshift / metallicity
 - O: observables (masses, χ_eff)
 
-**Why this matters:** Answer “Where in parameter space do simulators disagree — and why?” with statements like:
+**Why this matters:** Answer “Where in parameter space do simulators disagree, and why?” with statements like:
 - “Disagreement spikes at low metallicity and intermediate α_CE”
 - “High-mass BBHs are robust across codes; low-mass systems are not”
 - “COSMIC vs COMPAS disagree primarily in post-CE mass transfer regimes”
@@ -38,7 +38,7 @@ This converts epistemic uncertainty into diagnostic physics.
 
 ---
 
-## Pillar 2 — Learn Which Physics Each Code Believes
+## Pillar 2, Learn Which Physics Each Code Believes
 
 **What this does:** Train a code-identification head:
 
@@ -59,7 +59,7 @@ If the code can be identified from observables, epistemic uncertainty is learnab
 
 ---
 
-## Pillar 3 — Promote Falsification From Binary → Ranked Failure Modes
+## Pillar 3, Promote Falsification From Binary → Ranked Failure Modes
 
 **What this does:** Replace binary pass/fail with a failure taxonomy:
 
@@ -69,11 +69,11 @@ High MI at all α_CE | CE modeling fundamentally inconsistent
 MI only at low Z | Stellar winds / metallicity prescriptions diverge  
 MI only for high χ_eff | Spin evolution assumptions incompatible  
 
-The pipeline doesn’t just reject models — it states why.
+The pipeline doesn’t just reject models, it states why.
 
 ---
 
-## Pillar 4 — Causal Stress Tests
+## Pillar 4, Causal Stress Tests
 
 **What this does:** Run counterfactual interventions:
 
@@ -85,7 +85,7 @@ This separates:
 
 ---
 
-## Pillar 5 — One Astrophysical Result to Own
+## Pillar 5, One Astrophysical Result to Own
 
 One concrete, defensible astrophysical claim enabled by the above. Examples:
 - “GWTC-4 BBH channel fractions are identifiable only above X chirp mass”
