@@ -1,35 +1,46 @@
 # Gravitational Wave Formation Channels Research
 
+**TL;DR:** Multi-code, physics-informed SBI framework for gravitational-wave formation-channel inference. Treats population-synthesis simulators as Bayesian priors to expose epistemic uncertainty. Success/failure is judged by explicit falsification tests where model disagreement dominating observations or failure to isolate α_CE leads to rejection.
+
 This repository contains research code for investigating gravitational-wave formation channels using population-synthesis simulators (COMPAS, COSMIC, POSYDON planned) combined with physics-informed modeling, simulation-based inference (SBI), and domain-adaptation techniques.
+
+**Project Scope:** Undergraduate-led, extensible research framework with intentionally staged components; designed to be foundational, falsifiable, and ready for future extensions without implying missing work.
 
 ### Research Question
 
-How can a physics-informed deep learning architecture use an ensemble of population-synthesis codes (COMPAS, COSMIC, POSYDON) as Bayesian priors to jointly perform simulation-based inference and domain adaptation on gravitational-wave data, thereby quantifying both **epistemic uncertainty** (stellar-evolution model disagreement) and **aleatoric uncertainty** (detector noise) in formation-channel likelihoods?
+How can a **physics-informed deep learning architecture** use an ensemble of **population-synthesis codes (COMPAS, COSMIC, POSYDON)** as **Bayesian priors** to jointly perform **simulation-based inference** and **domain adaptation** on **gravitational-wave data**, thereby quantifying both **epistemic uncertainty** (stellar-evolution model disagreement) and **aleatoric uncertainty** (detector noise) in **formation-channel likelihoods**?
 
-The architecture is considered **falsified** if:
+**This framework is explicitly falsifiable.**
+- **Failure mode: Epistemic dominance.** If ensemble-based **mutual information across code predictions** exceeds **observational uncertainty** for **>50%** of **GWTC-4** events, stellar-evolution systematics dominate and formation-channel inference is unreliable.
+- **Failure mode: CE ineffectiveness.** If cross-modal attention fails to isolate **common-envelope efficiency (α_CE)** as the primary driver of Channel I/IV degeneracy (**rank correlation < 0.5**), the CE-governed diversity hypothesis is rejected.
 
-1. **Epistemic dominance:** Ensemble-based epistemic uncertainty (mutual information across code predictions) exceeds observational uncertainty for >50 % of GWTC-4 events, implying stellar-evolution systematics dominate and channels cannot be inferred reliably.
-2. **Common-envelope ineffectiveness:** Cross-modal attention fails to isolate common-envelope efficiency (α_CE) as the primary driver of Channel I/IV degeneracy (rank correlation < 0.5), contradicting the working hypothesis that CE physics governs channel diversity.
+If either criterion fails, the scientific hypothesis is rejected.
 
 ## Why This Matters
 
-- GW catalogs now require joint astrophysics + ML pipelines to separate formation channels with quantified uncertainty.
+- GW catalogs now require joint astrophysics + ML pipelines to separate formation-channel populations with quantified uncertainty.
 - Multi-code population synthesis exposes model systematics that routinely dominate inference but are rarely treated explicitly.
 - This repo provides falsifiable hypotheses, reproducible pipelines, and AWS-ready tooling for community-scale ensemble generation.
 - Cross-modal interpretability (attention + causal ranking) ties ML predictions back to the underlying stellar-physics knobs.
+
+## Intended Audience
+
+- Astrophysics researchers working on GWTC-4 formation-channel populations
+- ML-for-science practitioners interested in simulation-based inference
+- Students and researchers extending population-synthesis pipelines
 
 ## Project Overview
 
 This project uses physics-informed modeling with population-synthesis priors and simulation-based inference to:
 - Generate synthetic populations of binary compact objects using COMPAS
-- Train machine learning models to identify formation channels
-- Perform Bayesian inference on gravitational wave observations
-- Test and falsify astrophysical models using GWTC (Gravitational Wave Transient Catalog) data
+- Train machine learning models to identify formation-channel populations
+- Perform Bayesian inference on gravitational-wave observations
+- Test and falsify astrophysical models using GWTC-4 (Gravitational Wave Transient Catalog) data
 
 ### Simulator Integration Status
 
-- **COMPAS:** Integrated and validated locally + AWS (Nov 2025)
-- **COSMIC:** Integrated for rapid local prototyping (Nov 2025)
+- **COMPAS:** Integrated and validated locally + AWS (Nov 2025)
+- **COSMIC:** Integrated for rapid local prototyping (Nov 2025)
 - **POSYDON:** Wired into ensemble framework; requires grid setup (Dec 2025)
 
 ## Project Structure
@@ -69,6 +80,15 @@ ASTROTHESIS/
 └── scripts/                           # Utility shell helpers (env activation, etc.)
 ```
 
+## Current End-to-End Capability
+
+- ✔ COSMIC ensemble generator runs end-to-end locally via `pipelines.ensemble_generation.cosmic.generate_ensemble --test-run`.
+- ✔ Multi-code unified generator executes COMPAS + COSMIC test runs via `pipelines.ensemble_generation.multi_code.unified_generator --test-run`.
+- ✔ SBI training loop runs with default config (`pipelines.inference_and_falsification.train --config configs/training/pipeline/default_config.yaml`); inference entrypoint available.
+- 🟡 COMPAS production path validated on AWS (see `docs/operations/AWS_CLUSTER.md`); local macOS runs are intentionally offloaded.
+- 🟡 POSYDON CLI wrapper is wired but awaits grid assets/MESA executables before full activation.
+- ⏳ Full epistemic mutual-information study across codes and GWTC-4 event-level exports (figures/tables) planned post-POSYDON grid activation.
+
 ## Key Features
 
 - **COMPAS Integration**: Generate realistic populations of compact binary systems
@@ -77,9 +97,22 @@ ASTROTHESIS/
 - **Falsification Framework**: Rigorous statistical testing of astrophysical models
 - **GWTC-4 Data Integration**: Analysis pipeline for gravitational wave observations
 
+## Expected Scientific Outcomes
+
+- Channel posteriors with explicit **formation-channel** likelihoods and uncertainty decomposition (epistemic vs aleatoric) per GWTC-4 event.
+- Pass/fail verdicts against the two falsification criteria (epistemic dominance, CE ineffectiveness) to assess model viability.
+- Constraints on key hyperparameters (e.g., **α_CE**, kicks, winds) reported with mutual-information diagnostics across codes.
+- Comparative evidence for where simulator disagreement dominates vs. detector noise, guiding follow-on simulator improvements.
+
 ## Architecture & Falsification Plan
 
-The full multi-layer architecture, loss decomposition, and falsification workflow now live in [`docs/overview/ARCHITECTURE.md`](docs/overview/ARCHITECTURE.md). That document covers each layer (population synthesis, observational encoders, cross-modal fusion, SBI heads), the two formal falsification criteria, and implementation status (COMPAS + COSMIC operational, POSYDON planned).
+The full multi-layer architecture, loss decomposition, and falsification workflow now live in [`docs/overview/ARCHITECTURE.md`](docs/overview/ARCHITECTURE.md). That document covers each layer (population synthesis, observational encoders, cross-modal fusion, SBI heads), the two formal falsification criteria, and implementation status (COMPAS + COSMIC operational, POSYDON planned). Architecture diagram (placeholder) is referenced there.
+
+## Why Multi-Code Matters
+
+Single-code population synthesis can understate model-systematic uncertainty; comparing COMPAS (rapid, high-volume), COSMIC (alternate rapid recipes), and POSYDON (planned detailed MESA grids) surfaces disagreement as epistemic signal. This framework treats simulators as priors, aligns their outputs, and measures mutual information across codes—maintaining physics interpretability rather than acting as a black-box ML pipeline.
+
+Not a black-box: ML components are constrained by physics, and interpretability is a requirement, not an afterthought.
 
 ---
 
@@ -173,11 +206,34 @@ python -m pipelines.inference_and_falsification.train \
 python -m pipelines.inference_and_falsification.inference.sbi_framework
 ```
 
-## Citation
+## Reproducibility Guarantees
 
-If you use this code in your research, please cite:
-- COMPAS: [Stevenson et al. (2017)](https://arxiv.org/abs/1704.01352)
-- This project: [To be published]
+- YAML-driven configs: training settings in `configs/training`, infrastructure specs in `configs/infrastructure`.
+- Metadata-logged runs: artifacts, configs, and logs stored in `experiments/runs` and `results/logs`.
+- Controlled seeds: default seeds set in configs to enable repeatable runs; override via CLI flags when needed.
+- Outputs: figures in `results/figures`, tables in `results/tables`, falsification exports alongside run metadata.
+
+## Limitations & Assumptions
+
+- Rapid vs. detailed evolution: COMPAS/COSMIC provide rapid prescriptions; POSYDON detailed grids are pending for high-fidelity validation.
+- Grid resolution: Hyperparameter grids are finite; MI diagnostics will highlight where resolution is limiting.
+- Selection-function approximations: Current selection uses catalog-level detectability; end-to-end injection campaigns are out of scope for now.
+- Cosmology and metallicity evolution follow baseline assumptions; alternative cosmologies can be swapped via configs.
+- Detector-noise treatment relies on GWTC-4 posteriors; no reprocessing of raw strain is performed here.
+
+## Roadmap (Next 3–6 Months)
+
+- Activate POSYDON grid wrapper with validated MESA executables and grid assets.
+- Run full epistemic mutual-information study across COMPAS/COSMIC/POSYDON ensembles.
+- Publish GWTC-4 event-level channel posteriors with falsification verdicts and exportable tables.
+- Release lightweight reproducibility template (config + run metadata snapshot) for external comparisons.
+- This framework is intended to support a future preprint when results mature.
+
+## How to Cite / Collaborate
+
+- Cite COMPAS: [Stevenson et al. (2017)](https://arxiv.org/abs/1704.01352).
+- Cite this repository (pre-publication): “ASTROTHESIS (2025), multi-code GW formation-channel inference framework, UC San Diego.” A DOI will be added upon preprint release.
+- Contributions: open issues for questions/feature requests; submit PRs for fixes/experiments following project conventions.
 
 ## License
 
@@ -187,17 +243,15 @@ This project is part of research conducted at UC San Diego
 
 For questions or collaboration inquiries, please open an issue on this repository.
 
+## Full Pipeline (Conceptual Overview)
 
-
-Full Pipeline: 
-
-
+```
 POPULATION SYNTHESIS (Forward Models)
 │
 ├── COMPAS
 │     ├── Rapid binary evolution (analytic prescriptions)
 │     ├── Large hyperparameter grid (α_CE, σ_kick, winds, MT efficiency)
-│     └── High-volume Monte Carlo populations (~10⁶ binaries/model)
+│     └── High-volume Monte Carlo populations (~10^6 binaries/model)
 │
 ├── COSMIC
 │     ├── Alternate rapid-evolution engine (Hurley-style recipes)
@@ -207,20 +261,20 @@ POPULATION SYNTHESIS (Forward Models)
 └── POSYDON (planned)
       ├── MESA-based detailed stellar evolution grids
       ├── Interpolation + ML-flowchart execution
-      └── High-fidelity benchmark populations (~10⁴–10⁵ binaries/model)
+      └── High-fidelity benchmark populations (~10^4-10^5 binaries/model)
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 SELECTION FUNCTION & OBSERVABLE GENERATION
 │
-├── Convert source-frame → detector-frame masses
+├── Convert source-frame -> detector-frame masses
 ├── Apply cosmology & metallicity evolution
 ├── Compute merger redshift distribution
 ├── Apply LIGO/Virgo selection effects (SNR, detectability)
 └── Produce simulated GW observables:
       (m1, m2, χ_eff, distance/redshift, detection probability)
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 DATA ALIGNMENT (Domain Adaptation Layer)
 │
@@ -229,11 +283,11 @@ DATA ALIGNMENT (Domain Adaptation Layer)
 │     ├── distance/redshift posteriors
 │     └── event metadata (detector network, SNR)
 │
-├── Map real events → latent observation space
-└── Map simulated events → same latent space
-      (removes simulator–detector mismatch)
+├── Map real events -> latent observation space
+└── Map simulated events -> same latent space
+      (removes simulator-detector mismatch)
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 SIMULATION-BASED INFERENCE (Neural Density Estimation)
 │
@@ -244,13 +298,13 @@ SIMULATION-BASED INFERENCE (Neural Density Estimation)
 ├── Neural components:
 │     ├── event encoder (per-event summary)
 │     ├── population encoder (set-based fusion)
-│     ├── cross-modal attention (links events ↔ θ)
+│     ├── cross-modal attention (links events <-> θ)
 │     └── density estimator (NPE / NSF / NRE)
 │
 └── Output:
       Posterior p(θ | GW data)
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 FORMATION-CHANNEL INFERENCE
 │
@@ -263,7 +317,7 @@ FORMATION-CHANNEL INFERENCE
 │
 └── Produce channel-level likelihoods + uncertainties
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 EPISTEMIC + ALEATORIC UNCERTAINTY DECOMPOSITION
 │
@@ -276,20 +330,20 @@ EPISTEMIC + ALEATORIC UNCERTAINTY DECOMPOSITION
       ├── GWTC-4 posterior sample width
       └── injection-based calibration (optional)
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 FALSIFICATION FRAMEWORK
 │
 ├── Test 1: Epistemic Dominance
-│     If MI_across_codes > observational_uncertainty 
-│     for >50% of events → astrophysical model invalid.
+│     If MI_across_codes > observational_uncertainty
+│     for >50% of events -> astrophysical model invalid.
 │
 └── Test 2: CE Ineffectiveness
       If cross-modal attention fails to assign α_CE
       as main driver of Channel I/IV separation
-      (rank correlation < 0.5) → hypothesis falsified.
+      (rank correlation < 0.5) -> hypothesis falsified.
 
-───────────────────────────────────────────────────────────────
+----------------------------------------------------------------
 
 RESULTS & EXPORTS
 │
@@ -298,3 +352,4 @@ RESULTS & EXPORTS
 ├── Hyperparameter constraints
 ├── Falsification metrics
 └── Tables for publication (CSV/LaTeX)
+```
