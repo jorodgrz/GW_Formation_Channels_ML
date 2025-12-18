@@ -1,415 +1,361 @@
 # Project Implementation Summary
 
-## Physics-Informed Deep Learning for GW Formation Channel Inference
-
-**Status:** ✅ COMPLETE  
-**Date:** November 2025  
-**Institution:** Astronomy Club at UCSD - ASTROTHESIS
+**Purpose:** Current status snapshot and implementation overview—what's built, what's in progress, and where components live.  
+**How to use:** Review this for project status before diving into code; see `PIPELINE_README.md` for scientific context and `README.md` for quick start.  
+**Back to README:** [`README.md`](../../README.md)
 
 ---
 
-## What Was Implemented
+## Executive Summary
 
-A comprehensive research framework combining population synthesis simulations with deep learning for gravitational wave formation channel inference with rigorous uncertainty quantification.
+Multi-code, physics-informed simulation-based inference framework for gravitational-wave formation-channel inference. Population-synthesis simulators (COMPAS, COSMIC, POSYDON planned) are treated as ensemble priors to quantify epistemic uncertainty. The pipeline performs domain adaptation to align simulations with GWTC-4 observations, applies neural density estimation for Bayesian inference, and includes explicit falsification tests that reject the model when simulator disagreement dominates or when expected physical drivers fail to emerge.
 
-### Core Components
-
-#### 1. COMPAS Ensemble Generation (`pipelines/ensemble_generation/compas/`)
-- **Purpose**: Systematically vary astrophysical parameters to quantify epistemic uncertainty
-- **Key Features**:
-  - Automated grid generation over α_CE, λ_CE, kicks, metallicity, mass transfer
-  - Parallel execution support
-  - Metadata tracking and checkpointing
-  - ~1000 parameter combinations for full grid
-- **Main File**: `generate_ensemble.py` (300+ lines)
-
-#### 2. Physics-Informed Neural Networks (`models/`)
-- **Purpose**: Deep learning architecture that encodes population synthesis outputs
-- **Architecture Components**:
-  - `PhysicsInformedEncoder`: Variational encoder for each pop synth code
-  - `CrossModalAttention`: Identifies key physics parameters (α_CE)
-  - `DomainAdaptationLayer`: Bridges simulation→observation gap
-  - `FormationChannelClassifier`: 4-channel classification with uncertainty
-  - `PhysicsInformedEnsembleModel`: Full integrated architecture
-- **Main File**: `physics_informed_nn.py` (800+ lines)
-- **Key Innovation**: Separates epistemic (model) and aleatoric (noise) uncertainty
-
-#### 3. Simulation-Based Inference (`inference/`)
-- **Purpose**: Bayesian inference with learned priors from population synthesis
-- **Components**:
-  - `PopulationSynthesisPrior`: KDE-based prior from COMPAS ensemble
-  - `NeuralPosteriorEstimator`: Mixture density network for p(θ|x)
-  - `SBIFramework`: Complete inference pipeline
-- **Main File**: `sbi_framework.py` (500+ lines)
-- **Method**: Neural Posterior Estimation (NPE)
-
-#### 4. Falsification Testing (`falsification/`)
-- **Purpose**: Rigorous criteria for rejecting formation channel claims
-- **Two Criteria**:
-  1. **Epistemic > Observational**: Tests if model uncertainty dominates
-  2. **α_CE Correlation**: Tests if attention correctly identifies key physics
-- **Main File**: `test_criteria.py` (600+ lines)
-- **Outputs**: Statistical tests, plots, per-event results
-
-#### 5. GWTC-4 Data Loading (`data/`)
-- **Purpose**: Load and preprocess gravitational wave observations
-- **Features**:
-  - HDF5 posterior loading
-  - Derived parameter calculation (χ_eff, χ_p, t_delay)
-  - Uncertainty estimation
-  - Synthetic data generation for testing
-- **Main File**: `gwtc4_loader.py` (500+ lines)
-- **Compatibility**: GWTC-3, GWTC-4, custom catalogs
-
-#### 6. Training Infrastructure (`pipelines/inference_and_falsification/train.py`)
-- **Purpose**: End-to-end model training pipeline
-- **Features**:
-  - Multi-objective loss (classification, KL, domain adaptation, aleatoric)
-  - Gradient clipping and regularization
-  - Checkpointing and early stopping
-  - TensorBoard logging
-  - Learning rate scheduling
-- **Main File**: `pipelines/inference_and_falsification/train.py` (600+ lines)
-
-#### 7. Configuration System (`configs/`)
-- **Purpose**: Centralized configuration management
-- **File**: `default_config.yaml`
-- **Sections**: COMPAS, model, training, SBI, GWTC-4, falsification, computation
-
-#### 8. Documentation
-- **README.md**: Comprehensive documentation (400+ lines)
-- **QUICKSTART.md**: 5-minute getting started guide
-- **PROJECT_SUMMARY.md**: This file
-- **configs/infrastructure/requirements.txt**: All dependencies
-- **setup.py**: Package installation
-- **.gitignore**: Proper exclusions
+**Institution:** UC San Diego - ASTROTHESIS  
+**Status:** Active Development (December 2025)  
+**Stage:** Multi-code ensemble generation operational; SBI training loop functional; end-to-end inference and falsification pending full production runs.
 
 ---
 
-## Scientific Innovation
+## Current Implementation Status
 
-### 1. Ensemble Epistemic Uncertainty
-- First application of multi-code ensemble to GW formation channels
-- Quantifies model uncertainty from physics assumptions
-- Tests whether inferences are robust across codes
+### Completed Components
 
-### 2. Physics-Informed Priors
-- Uses population synthesis as Bayesian prior (not uniform/uninformative)
-- Encodes decades of stellar evolution knowledge
-- More realistic than phenomenological models
+#### 1. COSMIC Ensemble Generation
+- **Location:** `pipelines/ensemble_generation/cosmic/`
+- **Status:** Fully operational for rapid local prototyping
+- **Capability:** End-to-end sparse grid runs (100-10k systems per parameter combination)
+- **Performance:** ~seconds per 100 systems on local macOS
+- **Output:** HDF5 files with metadata, parameter grids (α_CE, kicks, winds, metallicity)
+- **Integration:** Test runs validated via `--test-run` flag
 
-### 3. Falsification Framework
-- **Novel contribution**: Explicit criteria for rejecting claims
-- Tests when model uncertainty is too large (Criterion 1)
-- Tests whether correct physics is learned (Criterion 2)
-- Prevents overconfident but wrong inferences
+#### 2. Multi-Code Unified Generator
+- **Location:** `pipelines/ensemble_generation/multi_code/`
+- **Status:** COMPAS + COSMIC test runs operational
+- **Capability:** Runs ensemble across multiple codes with harmonized parameter grids
+- **Output:** Unified metadata schema across codes for downstream inference
+- **Usage:** `unified_generator --test-run --codes compas cosmic`
 
-### 4. Uncertainty Decomposition
-- Separates epistemic (reducible) and aleatoric (irreducible)
-- Epistemic: From model choice (COMPAS vs COSMIC vs POSYDON)
-- Aleatoric: From detector noise and intrinsic stochasticity
-- Critical for understanding inference limitations
+#### 3. SBI Training Loop
+- **Location:** `pipelines/inference_and_falsification/train.py`
+- **Status:** End-to-end training functional with default config
+- **Architecture:** Event encoder, population aggregator, cross-modal attention, normalizing flow density estimator
+- **Features:** 
+  - Multi-objective loss (posterior likelihood, domain adaptation, uncertainty calibration)
+  - Checkpointing and TensorBoard logging
+  - Gradient clipping and learning rate scheduling
+  - YAML-driven configuration (`configs/training/pipeline/default_config.yaml`)
+- **Validation:** Runs to completion with synthetic data; ready for production ensembles
 
-### 5. Cross-Modal Attention
-- Learns which parameters drive formation channels
-- Tests hypothesis: α_CE is primary driver of Channel I/IV degeneracy
-- Interpretable neural network design
+#### 4. GWTC-4 Data Infrastructure
+- **Location:** `pipelines/data_alignment/` and `data/raw/`
+- **Status:** GWTC-4 posterior loader wired and tested
+- **Capability:** Ingests event posteriors (m1, m2, χ_eff, distance), computes derived parameters
+- **Integration:** Dataset ready for domain adaptation and inference
+- **Synthetic Mode:** Can generate synthetic events for testing and validation
+
+#### 5. Configuration & Documentation System
+- **Configs:** YAML-driven (`configs/training/`, `configs/infrastructure/`)
+- **Documentation:**
+  - `README.md` — Entry point with TL;DR, usage, falsification criteria
+  - `docs/overview/PIPELINE_README.md` — Comprehensive scientific pipeline explanation
+  - `docs/overview/ARCHITECTURE.md` — System architecture and falsification plan
+  - `docs/overview/SCIENTIFIC_POSITION.md` — Core thesis and pillars
+  - `docs/operations/SETUP.md`, `QUICKSTART.md`, `QUICKREF.md` — Setup and daily operations
+  - `docs/simulator_notes/` — Code-specific integration details (COMPAS, COSMIC, POSYDON)
+- **Reproducibility:** Controlled seeds, metadata logging, artifact tracking in `experiments/runs/`
+
+### In Progress
+
+#### 1. COMPAS Production Ensemble on AWS
+- **Status:** AWS Batch/EC2 validated for COMPAS; production 40-combination sparse grid pending
+- **Timeline:** Deploy full grid (~10^6 binaries total), upload to S3, sync locally
+- **Blocker:** Awaiting cluster allocation and final grid parameter selection
+- **Documentation:** See `docs/operations/AWS_CLUSTER.md` for runbooks
+
+#### 2. Unified Ensemble Loader for Training
+- **Task:** Implement `UnifiedEnsembleGenerator.load_ensemble_for_training`
+- **Requirement:** Transform COMPAS/COSMIC HDF5 outputs → training tensors (pop_synth_inputs)
+- **Integration Point:** Feed into `train.py` and `falsification/` modules
+- **Status:** API designed; implementation in progress
+
+#### 3. End-to-End Training Run
+- **Task:** Execute full training with production COMPAS + COSMIC ensembles
+- **Outputs:** Trained posterior estimator, checkpoints, TensorBoard logs
+- **Next Step:** Run `FalsificationTester` to populate `results/tables/falsification`
+- **Validation:** Compare posteriors to toy model results; coverage tests
+
+#### 4. Cross-Code Mutual-Information Study
+- **Task:** Compute MI diagnostics across COMPAS/COSMIC (and POSYDON when ready)
+- **Purpose:** Quantify epistemic uncertainty; feed into Test 1 (epistemic dominance)
+- **Outputs:** MI values per event, population-level MI, figures for publication
+- **Status:** Framework designed; awaiting production ensembles
+
+#### 5. GWTC-4 Event-Level Exports
+- **Task:** Generate per-event channel posteriors, falsification verdicts, exportable tables
+- **Format:** CSV/LaTeX tables, corner plots, attention visualizations
+- **Location:** `results/tables/`, `results/figures/`
+- **Status:** Pending full inference run
+
+### Planned / Pending
+
+#### 1. POSYDON Integration
+- **Status:** CLI wrapper implemented; awaits grid assets and MESA executables
+- **Next Steps:**
+  - Download interpolation grids via `posydon-setup-pipeline --download-grids` (~25 GB)
+  - Run 3×100-system smoke test to verify parameter mapping and HDF5 outputs
+  - Extend multi-code generator to include POSYDON
+  - Update AWS runbooks with POSYDON timing benchmarks
+- **Timeline:** Targeted for Q1 2026 pending grid availability
+
+#### 2. Unit & Integration Tests
+- **Scope:** Data loaders, ensemble runners, model forward pass, falsification metrics
+- **Location:** `tests/integration/`
+- **Status:** Smoke tests exist; comprehensive suite pending
+
+#### 3. Publication Outputs
+- **Task:** Prepare figures, tables, and text for preprint
+- **Dependencies:** Full production runs, falsification results, cross-code MI study
+- **Timeline:** Post-milestones above
+
+#### 4. Reproducibility Template
+- **Task:** Release lightweight config snapshot for external comparisons
+- **Format:** YAML configs + run metadata + instructions
+- **Purpose:** Enable community replication and extension
 
 ---
 
-## Technical Specifications
+## Component Architecture
 
-### Model Architecture
-- **Inputs**: 
-  - Population synthesis features (128-dim per code)
-  - GW observables (10-dim: m1, m2, χ_eff, χ_p, z, etc.)
-- **Outputs**:
-  - Formation channel probabilities (4 channels)
-  - Epistemic uncertainty (model disagreement)
-  - Aleatoric uncertainty (data noise)
-  - Attention weights (parameter importance)
-- **Parameters**: ~500K trainable parameters
-- **Latent Dimension**: 64
-- **Attention Heads**: 8
+### Population Synthesis Ensemble
 
-### Training
-- **Optimizer**: Adam (lr=1e-3)
-- **Batch Size**: 256
-- **Epochs**: 100 (with early stopping)
-- **Loss Components**:
-  - Classification: Cross-entropy
-  - KL Divergence: VAE regularization
-  - Domain Adaptation: Adversarial loss
-  - Aleatoric: Uncertainty regularization
-- **Hardware**: CPU/GPU/MPS support
+The pipeline uses three population-synthesis codes as ensemble priors:
 
-### Data Pipeline
-- **COMPAS Ensemble**: 100K systems × 1000 parameter combinations = 100M systems
-- **GWTC-4**: ~90 BBH events
-- **Posteriors**: 5000 samples per event
-- **Processing**: HDF5, on-the-fly augmentation
+#### COMPAS (Validated)
+- **Type:** Rapid binary evolution (analytic prescriptions)
+- **Scale:** ~10^6 binaries per model
+- **Grid:** α_CE, natal kicks (σ_kick), winds (β_wind), mass transfer efficiency
+- **Deployment:** AWS Batch/EC2 for production; local macOS runs offloaded
+- **Status:** Integration complete; production grid pending
+
+#### COSMIC (Operational)
+- **Type:** Rapid evolution (Hurley-style recipes, formerly BSE)
+- **Scale:** ~10^6 binaries per model
+- **Grid:** Parallel to COMPAS (α_CE, kicks, winds) for epistemic comparison
+- **Deployment:** Local macOS for rapid prototyping (~seconds per 100 systems)
+- **Status:** Fully operational; sparse grids generated
+
+#### POSYDON (Planned)
+- **Type:** Detailed MESA-based stellar evolution grids
+- **Scale:** ~10^4–10^5 binaries per model (higher fidelity, lower volume)
+- **Grid:** Interpolated from detailed pre-computed tracks
+- **Deployment:** CLI wrapper ready; awaits grid download
+- **Status:** API integrated; activation pending grid assets
+
+### Selection Function & Observables
+
+- **Source → Detector Frame:** Redshift masses, luminosity distance under ΛCDM cosmology
+- **Cosmology & Metallicity:** Star formation history, Z evolution (e.g., Z(z) scaling)
+- **Selection Effects:** LIGO/Virgo sensitivity (SNR > threshold), detection probability weights
+- **Outputs:** Synthetic GW catalogs (m1, m2, χ_eff, z, p_det) per simulation
+
+### Data Alignment (Domain Adaptation)
+
+- **Real Data:** GWTC-4 posterior samples ingested from `data/raw/`
+- **Latent Embedding:** Encoder maps events → shared latent space (simulated + real)
+- **Adaptation Techniques:** 
+  - Adversarial discriminator (real vs. sim)
+  - Maximum Mean Discrepancy (MMD) loss
+  - Optional optimal transport alignment
+- **Goal:** Remove simulator-detector mismatch; align distributions in latent space
+
+### Simulation-Based Inference (Neural Density Estimation)
+
+- **Architecture:**
+  - Event encoder (per-event summary)
+  - Population aggregator (set-based attention or pooling)
+  - Cross-modal attention (events ↔ hyperparameters θ)
+  - Normalizing flow density estimator (Neural Posterior Estimation)
+- **Training:**
+  - Simulated experiments: sample θ → generate population → label with θ
+  - Loss: maximize p(θ | data) under flow output
+  - Amortized: train once, infer instantly
+- **Outputs:** Posterior p(θ | GWTC-4) for hyperparameters + channel fractions
+
+### Formation-Channel Inference
+
+- **Channels:**
+  - Isolated binary evolution (IB)
+  - Common-envelope dominant (CE)
+  - Chemically homogeneous evolution (CHE)
+  - Dynamical (globular/nuclear clusters, GC/NSC)
+  - Other subchannels (triples, primordial, etc.)
+- **Inference Modes:**
+  - Population-level: branching fractions per channel (e.g., 60% IB, 30% dynamical, 10% CHE)
+  - Per-event: probability distribution over channels for each GW event
+- **Interpretability:** Cross-modal attention highlights which events inform which channels
+
+### Epistemic & Aleatoric Uncertainty Decomposition
+
+#### Epistemic (Model Uncertainty)
+- **Cross-code disagreement:** MI between code predictions and observables
+- **Posterior variance:** Width in θ posterior due to simulator differences
+- **Quantification:** Stratified MI, cross-code θ variance
+
+#### Aleatoric (Data Uncertainty)
+- **Event posteriors:** Width in GWTC-4 parameter estimates (detector noise)
+- **Sample variance:** Finite N events → statistical fluctuations
+- **Quantification:** Posterior sample spread, 1/√N scaling checks
+
+### Falsification Framework
+
+#### Test 1: Epistemic Dominance
+- **Criterion:** If MI(code; observables) > σ_obs for >50% of events → model invalid
+- **Interpretation:** Simulator disagreement exceeds data information content
+- **Action:** Reject inference; improve models or gather more data
+
+#### Test 2: CE Ineffectiveness
+- **Criterion:** If rank_correlation(α_CE, channel-separating latent variables) < 0.5 → hypothesis falsified
+- **Interpretation:** Common-envelope efficiency does not emerge as key driver
+- **Action:** Reject CE-dominance hypothesis; explore alternative physics
+
+### Outputs & Results
+
+- **Posteriors:** θ (α_CE, kicks, winds, etc.) with credible intervals
+- **Channel Fractions:** Branching ratios + per-event probabilities
+- **Figures:**
+  - Mass/spin/redshift distributions (model vs. data)
+  - Corner plots (θ joint/marginal posteriors)
+  - Attention heatmaps (event × parameter importance)
+- **Tables:**
+  - Hyperparameter constraints (median + 90% CI)
+  - Channel fractions (% per channel with uncertainties)
+  - Per-event classifications (event ID, channel probabilities)
+  - Falsification verdicts (pass/fail + MI/correlation values)
+- **Exports:** CSV/LaTeX for publication
 
 ---
 
-## File Structure Summary
+## File Structure & Key Modules
 
 ```
 ASTROTHESIS/
-├── docs/                         # Overview, methods, operations, simulator notes
-├── simulators/                   # External codes (COMPAS, POSYDON planned)
-├── pipelines/                    # Python package (ensembles, alignment, inference)
+├── pipelines/
 │   ├── ensemble_generation/
-│   ├── data_alignment/
+│   │   ├── compas/                  # COMPAS ensemble generator
+│   │   ├── cosmic/                  # COSMIC ensemble generator (operational)
+│   │   ├── posydon/                 # POSYDON CLI wrapper (pending)
+│   │   └── multi_code/              # Unified multi-code runner
+│   ├── data_alignment/              # GWTC-4 loaders, domain adaptation
 │   ├── inference_and_falsification/
-│   └── shared/
-├── configs/                      # Training + infrastructure YAML
-├── data/                         # raw/processed GWTC assets
-├── experiments/                  # notebooks + run artifacts
-├── results/                      # figures, tables, logs, checkpoints
-├── tests/                        # integration/unit coverage
-└── scripts/                      # helper shell scripts
+│   │   ├── models/                  # Neural architectures (encoders, flows)
+│   │   ├── inference/               # SBI framework (NPE)
+│   │   ├── falsification/           # Test criteria (MI, α_CE correlation)
+│   │   └── train.py                 # End-to-end training loop
+│   └── shared/                      # Cross-cutting utilities
+├── configs/
+│   ├── training/pipeline/           # Training configs (default_config.yaml)
+│   └── infrastructure/              # Requirements, cluster specs
+├── data/
+│   ├── raw/                         # GWTC-4 posteriors (gitignored)
+│   └── processed/                   # Feature stores, intermediates
+├── experiments/
+│   ├── notebooks/                   # Research notebooks
+│   └── runs/                        # Ensemble + training artifacts
+├── results/
+│   ├── figures/                     # Publication-ready plots
+│   ├── tables/                      # CSV/LaTeX exports
+│   └── logs/                        # Checkpoints, TensorBoard
+├── docs/
+│   ├── overview/                    # PIPELINE_README, ARCHITECTURE, SCIENTIFIC_POSITION
+│   ├── operations/                  # SETUP, QUICKSTART, AWS_CLUSTER
+│   └── simulator_notes/             # COMPAS_Info, COSMIC_INTEGRATION, POSYDON_INTEGRATION
+└── tests/
+    └── integration/                 # Smoke tests, integration checks
 ```
 
 ---
 
-## Research Workflow
+## Usage Quick Reference
 
-### Phase 1: Data Generation (Hours to Days)
+### Generate Ensembles
+
 ```bash
-# Generate COMPAS ensemble
-python -m pipelines.ensemble_generation.compas.generate_ensemble --n-systems 100000
+# COSMIC (fast local prototyping)
+python -m pipelines.ensemble_generation.cosmic.generate_ensemble \
+  --test-run --sparse --n-systems 100 \
+  --output-dir ./experiments/runs/cosmic_ensemble_output
 
-# Download GWTC-4
-# From: https://zenodo.org/record/8177023/files/GWTC-4_posteriors.h5
+# Multi-code (COMPAS + COSMIC)
+python -m pipelines.ensemble_generation.multi_code.unified_generator \
+  --test-run --sparse --n-systems 100 \
+  --codes compas cosmic \
+  --output-dir ./experiments/runs/multi_code_ensemble_output
+
+# POSYDON (pending grid activation)
+python -m pipelines.ensemble_generation.posydon.generate_ensemble \
+  --posydon-args-file configs/simulator_templates/POSYDON_CLI_ARGS.example \
+  --grid-point-count 40 \
+  --output-dir ./experiments/runs/posydon_ensemble_output
 ```
 
-### Phase 2: Model Training (Hours)
+### Train Model
+
 ```bash
-# Train model
 python -m pipelines.inference_and_falsification.train \
-    --config configs/training/pipeline/default_config.yaml
-
-# Monitor
-tensorboard --logdir runs/
+  --config configs/training/pipeline/default_config.yaml
 ```
 
-### Phase 3: Inference (Minutes)
-```python
-# Load model and data
-model = torch.load('checkpoints/best_model.pth')
-events = GWTC4Loader('data/raw/').load_all_events()
+### Run Inference
 
-# Infer formation channels
-for event in events:
-    output = model(event['pop_synth_inputs'], event['gw_observations'])
-    probs = output['channel_probs']
-    epistemic = output['epistemic_uncertainty']
-    aleatoric = output['aleatoric_uncertainty']
-```
-
-### Phase 4: Falsification (Minutes)
-```python
-# Test falsification criteria
-tester = FalsificationTester(model, events)
-results = tester.run_all_tests()
-
-if results['overall_falsified']:
-    print("⚠️ FALSIFIED: Inferences should not be trusted")
-else:
-    print("✅ PASSED: Proceed with scientific interpretation")
+```bash
+python -m pipelines.inference_and_falsification.inference.sbi_framework
 ```
 
 ---
 
-## Key Results (Expected)
+## Next Milestones
 
-### If Passed (Not Falsified)
-- **Finding**: Formation channels can be reliably inferred for ~X% of GWTC-4 events
-- **Uncertainty**: Median epistemic uncertainty ~Y%, aleatoric ~Z%
-- **Physics**: α_CE attention correlation ρ > 0.5, confirming theoretical expectations
-- **Implication**: Model physics is correct, proceed with astrophysical interpretation
-
-### If Falsified
-- **Finding**: Formation channel inference is unreliable
-- **Reason**: Either epistemic >> observational (Criterion 1) OR α_CE not identified (Criterion 2)
-- **Implication**: Need better population synthesis models or different observables
-- **Action**: Do NOT publish formation channel claims without addressing falsification
+1. **Deploy COMPAS Production Grid on AWS** — Run 40-combination sparse grid, sync to local
+2. **Implement Unified Ensemble Loader** — Transform HDF5 → training tensors
+3. **Execute End-to-End Training** — Full production run with COMPAS + COSMIC ensembles
+4. **Run Falsification Tests** — Populate `results/tables/falsification`
+5. **Cross-Code MI Study** — Quantify epistemic uncertainty across codes
+6. **Generate GWTC-4 Event-Level Outputs** — Channel posteriors, figures, tables
+7. **Activate POSYDON** — Download grids, validate, integrate into multi-code pipeline
+8. **Prepare Publication Outputs** — Draft figures/tables for preprint
 
 ---
 
-## Novel Scientific Questions Addressed
+## Scientific Context
 
-1. **Can we distinguish formation channels from GW data alone?**
-   - Answer depends on falsification testing
+For comprehensive explanation of the pipeline's scientific motivation, technical implementation, and why each stage is both realistic and novel, see:
 
-2. **How much does stellar evolution uncertainty matter?**
-   - Quantified via epistemic uncertainty across codes
+- **[Pipeline Overview](PIPELINE_README.md)** — Full narrative with realism vs. novelty breakdown
+- **[Architecture](ARCHITECTURE.md)** — System design and falsification criteria
+- **[Scientific Position](SCIENTIFIC_POSITION.md)** — Core thesis and pillars
 
-3. **Is α_CE the primary driver of channel degeneracy?**
-   - Tested via cross-modal attention correlation
+For operational details:
 
-4. **When should we reject formation channel claims?**
-   - Explicit criteria in falsification framework
-
-5. **What's the breakdown of model vs. measurement uncertainty?**
-   - Decomposed via epistemic vs. aleatoric separation
+- **[README](../../README.md)** — Entry point with quick start
+- **[Setup Guide](../operations/SETUP.md)** — Environment provisioning
+- **[AWS Cluster](../operations/AWS_CLUSTER.md)** — Production COMPAS workflow
 
 ---
 
-## Future Extensions
+## Contributing & Reproducibility
 
-### Short Term
-1. Add COSMIC and POSYDON population synthesis codes
-2. Train on real GWTC-4 data (not synthetic)
-3. Hyperparameter optimization
-4. Analysis notebooks for interpretation
-
-### Medium Term
-1. Include additional observables (eccentricity, higher modes)
-2. Time-dependent features (waveform morphology)
-3. Hierarchical Bayesian inference across catalog
-4. Active learning for targeted COMPAS runs
-
-### Long Term
-1. Integration with LIGO/Virgo parameter estimation
-2. Real-time formation channel classification
-3. Multi-messenger (GW + EM) joint inference
-4. Extend to neutron star binaries
+- **Controlled Seeds:** Default seeds in configs; override via CLI for variations
+- **Metadata Logging:** All runs tracked in `experiments/runs/` with configs + timestamps
+- **YAML-Driven:** Training settings, infrastructure specs fully specified
+- **Open Issues:** For questions, feature requests, or collaboration inquiries
+- **External Replication:** Reproducibility template planned post-publication
 
 ---
 
-## Performance Benchmarks
+## License & Citation
 
-### Computational Requirements
-- **COMPAS Ensemble**: ~1000 CPU-hours for full grid
-- **Training**: ~10 GPU-hours for 100 epochs
-- **Inference**: <1 second per event
-- **Falsification**: ~1 minute for full GWTC-4 catalog
+**Institution:** UC San Diego  
+**Project:** ASTROTHESIS
 
-### Resource Scaling
-- **Memory**: 16GB RAM minimum, 32GB recommended
-- **Storage**: ~100GB for full COMPAS ensemble
-- **GPU**: Optional but 10-100× faster training
-
----
-
-## Testing Status
-
-### Unit Tests (To Be Added)
-- [ ] Model forward pass
-- [ ] Loss computation
-- [ ] Data loading
-- [ ] Ensemble generation
-- [ ] Falsification criteria
-
-### Integration Tests (To Be Added)
-- [ ] End-to-end training
-- [ ] Checkpoint save/load
-- [ ] Inference pipeline
-
-### Current Testing
-- ✅ Synthetic data generation works
-- ✅ Model architecture compiles
-- ✅ Configuration loading
-- ✅ COMPAS integration
-
----
-
-## Deliverables
-
-### Code
-- ✅ Complete implementation (~4500 lines)
-- ✅ Thoroughly commented (per user preference)
-- ✅ Modular architecture
-- ✅ Configuration-driven
-
-### Documentation
-- ✅ Comprehensive README
-- ✅ Quick start guide
-- ✅ API documentation in docstrings
-- ✅ Project summary
-
-### Research Outputs
-- 🔄 Trained model (pending full training)
-- 🔄 Falsification results (pending GWTC-4)
-- 🔄 Scientific paper (future)
-- 🔄 Analysis notebooks (future)
-
----
-
-## Dependencies
-
-### Core
-- PyTorch 2.0+ (deep learning)
-- NumPy, SciPy (numerical computing)
-- Pandas (data processing)
-- h5py (HDF5 I/O)
-
-### Astronomy
-- Astropy 5.2+ (cosmology, units)
-
-### Machine Learning
-- scikit-learn (KDE, utilities)
-- TensorBoard (logging)
-
-### Visualization
-- Matplotlib, Seaborn
-
-### COMPAS
-- COMPAS v02.41.04+ (already installed)
-
----
-
-## Citation
-
-```bibtex
-@software{astrothesis_pipelines_2025,
-  author = {Rodriguez, Joseph},
-  title = {Physics-Informed Deep Learning for Gravitational Wave Formation Channel Inference},
-  year = {2025},
-  institution = {Astronomy Club at UCSD},
-  project = {ASTROTHESIS},
-  url = {https://github.com/UCSD-Astronomy/ASTROTHESIS},
-  version = {0.1.0},
-  doi = {10.5281/zenodo.XXXXXX}
-}
-```
-
----
-
-## Acknowledgments
-
-This implementation brings together:
-- **Population Synthesis**: COMPAS team's stellar evolution expertise
-- **Machine Learning**: Modern uncertainty quantification techniques
-- **Astrophysics**: GW formation channel theory
-- **Statistics**: Rigorous falsification framework
-
-Special thanks to:
-- COMPAS development team
-- LIGO/Virgo/KAGRA collaborations
-- UCSD Astronomy Club
-
----
-
-## Conclusion
-
-This framework provides a **rigorous, falsifiable approach** to one of gravitational wave astrophysics' key questions: **Where do binary black holes come from?**
-
-By combining physics-informed priors from population synthesis with modern deep learning uncertainty quantification, we can:
-1. Make probabilistic inferences about formation channels
-2. Quantify both model and measurement uncertainties
-3. **Know when to reject our own claims** via falsification testing
-
-This last point is critical for scientific integrity. Rather than overconfidently claiming formation channel identification, we provide explicit criteria for when such claims should be rejected.
-
-**The framework is complete and ready for research use.**
-
----
-
-**Project Status:** ✅ IMPLEMENTATION COMPLETE  
-**Next Steps:** Generate full COMPAS ensemble, train on real GWTC-4, publish results  
-**Contact:** Joseph Rodriguez, UCSD Astronomy Club
-
-**Date:** November 26, 2025
-
+**Cite COMPAS:** Stevenson et al. (2017) — https://arxiv.org/abs/1704.01352  
+**Cite This Repo (pre-publication):** "ASTROTHESIS (2025), multi-code GW formation-channel inference framework, UC San Diego." DOI pending preprint release.

@@ -23,13 +23,13 @@ of legacy session-based APIs.
 
 ## Recent Progress
 
-- ✅ Exported `configs/infrastructure/environment-posydon.yml` and documented
+- [DONE] Exported `configs/infrastructure/environment-posydon.yml` and documented
   activation steps.
-- ✅ POSYDON v2.2.0 installed in editable mode under `simulators/posydon/posydon/`.
-- ✅ CLI wrapper at `pipelines/ensemble_generation/posydon/generate_ensemble.py`
+- [DONE] POSYDON v2.2.0 installed in editable mode under `simulators/posydon/posydon/`.
+- [DONE] CLI wrapper at `pipelines/ensemble_generation/posydon/generate_ensemble.py`
   that interfaces with `posydon-run-grid`.
-- ✅ Wired into `UnifiedEnsembleGenerator` - can be invoked via multi-code interface.
-- ⏳ Requires POSYDON interpolation grids (HMS-HMS, CO-HeMS, etc.) downloaded via
+- [DONE] Wired into `UnifiedEnsembleGenerator` - can be invoked via multi-code interface.
+- [PLANNED] Requires POSYDON interpolation grids (HMS-HMS, CO-HeMS, etc.) downloaded via
   `posydon-setup-pipeline` before production runs.
 
 ---
@@ -71,11 +71,11 @@ gen.run(n_alpha_points=10, test_run=True)
 
 | Phase | Description | Effort | Owner |
 | --- | --- | --- | --- |
-| 1 | Bootstrap POSYDON environment (conda env + compiled interpolators) | 0.5 day | ✅ Done |
-| 2 | Mirror COMPAS/COSMIC CLI flags in `pipelines/ensemble_generation/posydon/generate_ensemble.py` | 1 day | ✅ Done |
-| 3 | Harmonize parameter grids (α_CE, λ_CE, kicks, metallicity) and metadata schema | 0.5 day | ✅ Done |
-| 4 | Validate 3×100-system smoke tests locally; profile 10k system timing | 0.5 day | ⏳ Requires grids |
-| 5 | Wire into `UnifiedEnsembleGenerator` (add POSYDON code enum branch) and downstream loaders | 0.5 day | ✅ Done |
+| 1 | Bootstrap POSYDON environment (conda env + compiled interpolators) | 0.5 day | [DONE] Done |
+| 2 | Mirror COMPAS/COSMIC CLI flags in `pipelines/ensemble_generation/posydon/generate_ensemble.py` | 1 day | [DONE] Done |
+| 3 | Harmonize parameter grids (α_CE, λ_CE, kicks, metallicity) and metadata schema | 0.5 day | [DONE] Done |
+| 4 | Validate 3×100-system smoke tests locally; profile 10k system timing | 0.5 day | [PLANNED] Requires grids |
+| 5 | Wire into `UnifiedEnsembleGenerator` (add POSYDON code enum branch) and downstream loaders | 0.5 day | [DONE] Done |
 
 Target completion: **mid-December 2025**, aligned with AWS COMPAS delivery so
 multi-code priors (COMPAS + COSMIC + POSYDON) are available before the first SBI

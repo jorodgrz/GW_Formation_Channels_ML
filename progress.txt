@@ -1,12 +1,106 @@
-Spin up AWS Batch/EC2 and finish the 40-combination COMPAS sparse grid, uploading metadata + HDF5s to S3, then syncing locally.
-(check) Run the full COSMIC sparse grid (10k systems per combo) to match COMPAS resolution, not just 100-system smoke tests.
-Implement UnifiedEnsembleGenerator.load_ensemble_for_training for COMPAS (and eventually COSMIC) and add a transformation step that emits pop_synth_inputs tensors the trainer/falsifier expect.
-(check)Download real GWTC-4 posteriors into data/raw/, wire the loader into a Dataset that pairs each event with matching ensemble slices, and create synthetic labels/domain labels for initial training if needed.
-Execute the training script end-to-end with logging + real checkpoints, then run FalsificationTester on the prepared catalog to populate results/tables/falsification.
-Add unit/integration tests (data loaders, ensemble runners, model forward pass, falsification metrics) so regressions surface quickly.
+## Completed
 
+### Core Infrastructure
+- COSMIC ensemble generator operational for rapid local prototyping (100-10k systems per combo)
+- Multi-code unified generator executes COMPAS + COSMIC test runs successfully
+- SBI training loop functional with default config (event encoder, population aggregator, cross-modal attention, normalizing flows)
+- GWTC-4 posteriors downloaded to data/raw/; loader wired to Dataset with synthetic/domain labels
+- Configuration system implemented (YAML-driven training/infrastructure configs)
+- Experiment tracking with metadata logging and artifact storage in experiments/runs/
 
-Download the POSYDON interpolation grids via posydon-setup-pipeline --download-grids (needs ~25 GB free). This unblocks everything else.
-Run a 3×100-system smoke test once the grids are in place to verify the CLI wrapper, parameter mapping, and HDF5 outputs (Phase 4 of the integration plan).
-Finish the generator implementation tasks listed under “Open Tasks”: port the POSYDON population sampler, hook up the shared parameter grid + start/end index slicing, and emit metadata in the same schema used by COMPAS/COSMIC.
-Add tests and AWS automation updates: extend the multi-code smoke test to include POSYDON, then refresh the AWS runbooks/playbooks once you have timing benchmarks from the smoke test.
+### Documentation (December 2025)
+- README.md refactored: concise TL;DR, scientific motivation, streamlined pipeline, falsification criteria
+- docs/overview/PIPELINE_README.md: comprehensive narrative explaining each stage (population synthesis, selection, domain adaptation, SBI, channel inference, uncertainty decomposition, falsification, outputs)
+- docs/overview/ARCHITECTURE.md: system architecture with full pipeline diagram and falsification tests
+- docs/overview/SCIENTIFIC_POSITION.md: core thesis, five pillars (disagreement maps, code identifiability, ranked failures, causal stress tests, astrophysical claims)
+- docs/overview/PROJECT_SUMMARY.md: current status snapshot with completed/in-progress/planned breakdowns aligned to progress.txt
+- Documentation headers standardized (Purpose / How to use / Back to README) across all overview docs
+- docs/operations/ guides: SETUP.md, QUICKSTART.md, QUICKREF.md, AWS_CLUSTER.md
+- docs/simulator_notes/ integration details: COMPAS_Info.md, COSMIC_INTEGRATION.md, POSYDON_INTEGRATION.md
+
+## In Progress
+
+### Ensemble Generation
+- Deploy COMPAS production 40-combination sparse grid on AWS Batch/EC2
+  - Target: ~10^6 binaries total across α_CE, kicks, winds, mass-transfer efficiency grid
+  - Upload metadata + HDF5s to S3 and sync locally
+  - Status: AWS validated; awaiting cluster allocation and final grid parameters
+
+### Training & Inference
+- Implement UnifiedEnsembleGenerator.load_ensemble_for_training
+  - Transform COMPAS/COSMIC HDF5 outputs → training tensors (pop_synth_inputs)
+  - Integration point: feed into train.py and falsification modules
+  - Status: API designed; implementation underway
+
+- Execute end-to-end training run with production COMPAS + COSMIC ensembles
+  - Train neural posterior estimator with full hyperparameter grids
+  - Generate checkpoints, TensorBoard logs, and trained models
+  - Run FalsificationTester to populate results/tables/falsification
+  - Validate posteriors against toy models and perform coverage tests
+
+### Analysis & Outputs
+- Complete cross-code mutual-information study
+  - Compute MI diagnostics across COMPAS/COSMIC (and POSYDON when ready)
+  - Quantify epistemic uncertainty at event and population level
+  - Generate MI values per event for Test 1 (epistemic dominance)
+  - Status: Framework designed; awaiting production ensembles
+
+- Generate GWTC-4 event-level exports
+  - Per-event channel posteriors (IB, CE, CHE, dynamical, other)
+  - Falsification verdicts (epistemic dominance test, α_CE effectiveness test)
+  - Exportable CSV/LaTeX tables for publication
+  - Corner plots, attention visualizations, mass/spin/redshift distributions
+  - Location: results/tables/, results/figures/
+
+## Planned / Next Milestones
+
+### Testing & Validation
+- Add comprehensive unit & integration tests
+  - Data loaders, ensemble runners, model forward pass, falsification metrics
+  - Extend tests/integration/ beyond current smoke tests
+  - Continuous integration setup
+
+### POSYDON Integration Track
+- Download POSYDON interpolation grids
+  - Command: `posydon-setup-pipeline --download-grids` (~25 GB)
+  - Verify grid integrity and compatibility
+
+- Run POSYDON smoke tests
+  - 3×100-system validation run
+  - Verify CLI wrapper, parameter mapping, HDF5 output schema
+  - Confirm metadata matches COMPAS/COSMIC format
+
+- Integrate POSYDON into multi-code generator
+  - Port POSYDON population sampler to unified framework
+  - Hook up shared parameter grid with start/end index slicing
+  - Extend multi-code smoke test to include all three codes
+
+- Update AWS infrastructure for POSYDON
+  - Timing benchmarks for grid interpolation vs. rapid codes
+  - Storage and compute requirements documentation
+  - Production deployment playbook
+
+### Publication & Dissemination
+- Prepare publication outputs
+  - Finalize figures: mass/spin distributions, corner plots, attention heatmaps
+  - Generate tables: hyperparameter constraints, channel fractions, per-event classifications
+  - Write falsification summary and uncertainty decomposition results
+  - Dependencies: full production runs, MI study, all three codes operational
+
+- Release reproducibility template
+  - Lightweight config snapshot for external replication
+  - YAML configs + run metadata + step-by-step instructions
+  - Enable community comparisons and extensions
+
+- Draft preprint
+  - Assemble results from milestones above
+  - Target: submission once POSYDON integrated and full cross-code study complete
+  - Timeline: Q1-Q2 2026
+
+## Current Blockers
+
+- **COMPAS AWS Grid:** Awaiting cluster allocation for production 40-combo run
+- **POSYDON Grids:** Download and validation needed before integration
+- **Full Training Run:** Depends on COMPAS production ensemble completion
+
+## Updated: December 2025

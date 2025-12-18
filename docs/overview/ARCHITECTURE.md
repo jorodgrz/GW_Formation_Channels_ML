@@ -1,8 +1,123 @@
 # Multi-Code Architecture & Falsification Plan
 
-This document details the end-to-end architecture for ASTROTHESIS, spanning population-synthesis ensemble generation, observational encoders, cross-modal alignment, simulation-based inference (SBI), and falsification criteria.
+**Purpose:** Describe the end-to-end architecture: population synthesis, encoders, alignment, SBI, and falsification criteria.  
+**How to use:** Read top-down when wiring or auditing components; pair with `README.md` for orientation and `PIPELINE_README.md` for module-level detail.  
+**Back to README:** [`README.md`](../../README.md)
 
-> **Integration status (Nov 2025):** COMPAS ✅, COSMIC ✅, POSYDON planned (API assessment complete, generator TBD).
+> **Integration status (Nov 2025):** COMPAS operational, COSMIC operational, POSYDON planned (API assessment complete, generator TBD).
+
+---
+
+## Pipeline Summary (Conceptual)
+
+```
+POPULATION SYNTHESIS (Forward Models)
+│
+├── COMPAS
+│     ├── Rapid binary evolution (analytic prescriptions)
+│     ├── Large hyperparameter grid (α_CE, σ_kick, winds, MT efficiency)
+│     └── High-volume Monte Carlo populations (~10^6 binaries/model)
+│
+├── COSMIC
+│     ├── Alternate rapid-evolution engine (Hurley-style recipes)
+│     ├── Parallel hyperparameter grid overlapping with COMPAS
+│     └── Used for model disagreement within rapid codes
+│
+└── POSYDON (planned)
+      ├── MESA-based detailed stellar evolution grids
+      ├── Interpolation + ML-flowchart execution
+      └── High-fidelity benchmark populations (~10^4-10^5 binaries/model)
+
+----------------------------------------------------------------
+
+SELECTION FUNCTION & OBSERVABLE GENERATION
+│
+├── Convert source-frame -> detector-frame masses
+├── Apply cosmology & metallicity evolution
+├── Compute merger redshift distribution
+├── Apply LIGO/Virgo selection effects (SNR, detectability)
+└── Produce simulated GW observables:
+      (m1, m2, χ_eff, distance/redshift, detection probability)
+
+----------------------------------------------------------------
+
+DATA ALIGNMENT (Domain Adaptation Layer)
+│
+├── Load GWTC-4 real-event posteriors
+│     ├── (m1, m2, χ_eff) posterior samples
+│     ├── distance/redshift posteriors
+│     └── event metadata (detector network, SNR)
+│
+├── Map real events -> latent observation space
+└── Map simulated events -> same latent space
+      (removes simulator-detector mismatch)
+
+----------------------------------------------------------------
+
+SIMULATION-BASED INFERENCE (Neural Density Estimation)
+│
+├── Training Inputs:
+│     ├── θ (model hyperparameters)
+│     └── simulated GW populations (aligned)
+│
+├── Neural components:
+│     ├── event encoder (per-event summary)
+│     ├── population encoder (set-based fusion)
+│     ├── cross-modal attention (links events <-> θ)
+│     └── density estimator (NPE / NSF / NRE)
+│
+└── Output:
+      Posterior p(θ | GW data)
+
+----------------------------------------------------------------
+
+FORMATION-CHANNEL INFERENCE
+│
+├── Infer probabilities for channels:
+│     ├── isolated binary evolution (IB)
+│     ├── common-envelope dominant (CE)
+│     ├── chemically homogeneous evolution (CHE)
+│     ├── dynamical (GC/NSC)
+│     └── other subchannels
+│
+└── Produce channel-level likelihoods + uncertainties
+
+----------------------------------------------------------------
+
+EPISTEMIC + ALEATORIC UNCERTAINTY DECOMPOSITION
+│
+├── Epistemic (model disagreement):
+│     ├── COMPAS vs COSMIC vs POSYDON distributions
+│     ├── mutual information across code predictions
+│     └── cross-code variance in θ posterior
+│
+└── Aleatoric (detector noise):
+      ├── GWTC-4 posterior sample width
+      └── injection-based calibration (optional)
+
+----------------------------------------------------------------
+
+FALSIFICATION FRAMEWORK
+│
+├── Test 1: Epistemic Dominance
+│     If MI_across_codes > observational_uncertainty
+│     for >50% of events -> astrophysical model invalid.
+│
+└── Test 2: CE Ineffectiveness
+      If cross-modal attention fails to assign α_CE
+      as main driver of Channel I/IV separation
+      (rank correlation < 0.5) -> hypothesis falsified.
+
+----------------------------------------------------------------
+
+RESULTS & EXPORTS
+│
+├── Figures (mass, spin, redshift distributions)
+├── Channel posteriors
+├── Hyperparameter constraints
+├── Falsification metrics
+└── Tables for publication (CSV/LaTeX)
+```
 
 ---
 
@@ -27,125 +142,51 @@ This document details the end-to-end architecture for ASTROTHESIS, spanning popu
 
 ---
 
-## B. Observational Data Pipeline
+## B. Data Alignment (Domain Adaptation)
 
-### B1. Raw-Strain Encoder
+**What lives here:** Map GWTC-4 posterior samples and simulated detected events into a shared latent space; optional adversarial/OT alignment to reduce simulator–detector mismatch.
 
-- 1D CNN + dilated WaveNet + transformer encoder to ingest h(t).
-- Condition on detector PSD, calibration uncertainty, glitches, and non-Gaussian noise bursts.
-- Output latent `z_obs` capturing **aleatoric uncertainty**.
-
-### B2. PE Posterior Encoder (Optional Parallel Path)
-
-- Encode (m₁, m₂, χ_eff, χ_p, z, etc.) via MLP or compact transformer.
-- Fuses with raw-strain encoder for hybrid inference, stabilizing early training.
+**Outputs:** Aligned latents for real and simulated events.
 
 ---
 
-## C. Population Synthesis Encoder
+## C. Inference & Fusion
 
-### C1. Physics-Aware Embedding Network
+**What lives here:** Event encoder, population/set encoder, cross-modal attention linking events ↔ θ, and a neural density estimator (NPE/NSF/NRE) to produce p(θ | data).
 
-- Transformer or graph network mapping simulated population features → latent `z_sim`.
-- Conditioning on code `C` ensures the model learns systematic differences.
-
-### C2. Domain-Adaptation Mechanisms
-
-Choose one or combine:
-
-- Adversarial domain adaptation (sim vs real discriminator).
-- Normalizing-flow transport from simulation → observational domain.
-- Optimal-transport layer to align marginals (Wasserstein).
-
-Goal:
-
-```
-z_sim ≈ z_obs  in a common manifold.
-```
+**Outputs:** Posteriors over θ given aligned data.
 
 ---
 
-## D. Cross-Modal Alignment Layer
+## D. Formation-Channel Inference
 
-### D1. Cross-Attention Transformer
-
-- Multi-head attention fusing `z_sim ↔ z_obs`.
-- Learns causal mappings between physical and observed features.
-- Attention maps provide scientific interpretability.
-
-### D2. Causal Interpretability Block
-
-- Extract rank correlations between attention weights and hyperparameters (especially α_CE).
-- Enables falsification criterion #2 (α_CE dominance).
+**What lives here:** Channel head producing probabilities for IB, CE, CHE, dynamical (GC/NSC), and other subchannels; channel-level likelihoods and uncertainties.
 
 ---
 
-## E. Simulation-Based Inference Head
+## E. Uncertainty Decomposition
 
-### E1. Normalizing-Flow Posterior Estimator
-
-- Replace MDNs with expressive flows (neural spline flows, Fourier flows, diffusion posteriors).
-- Outputs:
-
-  ```
-  p(θ, C, channel | data)
-  ```
-
-### E2. Formation-Channel Classifier
-
-- Softmax head predicting {I, II, III, IV} using fused latent `z_fusion`.
-
-### E3. Uncertainty Decomposition
-
-- **Epistemic:** variance across `p(θ | C, data)` for C ∈ {COMPAS, COSMIC, POSYDON}.
-- **Aleatoric:** posterior width conditioned on a given code and event.
+**What lives here:** Epistemic from cross-code disagreement and θ-posterior spread; aleatoric from GW posterior widths and finite sample size; mutual-information diagnostics optional.
 
 ---
 
-## F. Training Procedure
+## F. Falsification Criteria
 
-### F1. Joint Loss
-
-- Likelihood-free objective (NLL on flow outputs).
-- Adversarial loss for domain adaptation.
-- Calibration loss for uncertainty consistency.
-- Cross-modal attention regularization.
-- Physics-informed priors (e.g., monotonic trends).
-
-### F2. Two-Stage Training
-
-1. Train domain alignment + encoders (simulated + real).
-2. Train the SBI head on the aligned latent space.
+- **Epistemic dominance:** If MI_across_codes > observational_uncertainty for >50% of events, the model is invalid.  
+- **CE ineffectiveness:** If cross-modal importance fails to surface α_CE as a driver (rank correlation < 0.5), the hypothesis is rejected.
 
 ---
 
-## G. Hypothesis Testing / Falsification Module
+## G. Outputs
 
-### G1. Falsification Test 1: Epistemic Dominance
-
-Check if:
-
-```
-σ_epi > σ_obs
-```
-
-for >50 % of GWTC-4 events.  
-If true → astrophysical inference is impossible; reject the hypothesis.
-
-### G2. Falsification Test 2: α_CE Causal Dominance
-
-Compute:
-
-```
-ρ = rank-correlation(attention weights, α_CE)
-```
-
-If `ρ < 0.5`, CE physics does **not** explain channel degeneracy → reject the hypothesis.
+- Posteriors for θ and channel probabilities, MI diagnostics, falsification metrics, and publication-ready figures/tables.
 
 ---
 
-## Summary
+## H. Training Procedure (high level)
 
-The target system combines multi-code population synthesis (COMPAS, COSMIC, POSYDON planned) as hierarchical Bayesian hyperpriors with a joint raw-strain and PE-parameter GW encoder, fused via cross-modal transformers to perform SBI using normalizing flows. Domain adaptation aligns simulated and real distributions through adversarial / OT / flow mapping, while attention-based interpretability extracts causal structure—specifically isolating α_CE as the primary driver of formation-channel diversity. The system quantifies epistemic uncertainty via cross-code disagreement and aleatoric uncertainty via raw-strain noise modeling, and the entire astrophysical hypothesis is rejected if either falsification criterion is triggered.
+- Train alignment + encoders on simulated + real data.
+- Train the SBI head on the aligned latent space.
+- Monitor MI across codes and α_CE salience for falsification readiness.
 
 

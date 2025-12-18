@@ -179,9 +179,9 @@ docs/
 ## Next Steps
 
 ### Immediate (Unblocked)
-1. ✅ Generate COSMIC sparse grid locally (2-3 hours)
-2. ✅ Test training pipeline with COSMIC data
-3. ✅ Develop epistemic uncertainty analysis notebooks
+1. [DONE] Generate COSMIC sparse grid locally (2-3 hours)
+2. [DONE] Test training pipeline with COSMIC data
+3. [DONE] Develop epistemic uncertainty analysis notebooks
 
 ### Short Term (Parallel Development)
 1. Deploy COMPAS sparse grid on AWS (per AWS_CLUSTER.md)
@@ -196,20 +196,20 @@ docs/
 ## Testing Status
 
 ### Completed Tests
-- ✅ COSMIC installation and imports
-- ✅ BSE parameter dictionary completeness
-- ✅ Binary evolution (100 systems × 3 runs)
-- ✅ DCO filtering and output
-- ✅ HDF5 file creation and structure
-- ✅ Metadata tracking
-- ✅ Command-line interface
+- [DONE] COSMIC installation and imports
+- [DONE] BSE parameter dictionary completeness
+- [DONE] Binary evolution (100 systems × 3 runs)
+- [DONE] DCO filtering and output
+- [DONE] HDF5 file creation and structure
+- [DONE] Metadata tracking
+- [DONE] Command-line interface
 
 ### Pending Tests
-- ⏳ Large-scale run (10k systems)
-- ⏳ Full sparse grid (40 runs)
-- ⏳ Integration with training pipeline
-- ⏳ Multi-code unified interface end-to-end
-- ⏳ Cross-code comparison analysis
+- [PLANNED] Large-scale run (10k systems)
+- [PLANNED] Full sparse grid (40 runs)
+- [PLANNED] Integration with training pipeline
+- [PLANNED] Multi-code unified interface end-to-end
+- [PLANNED] Cross-code comparison analysis
 
 ## Integration Quality
 
