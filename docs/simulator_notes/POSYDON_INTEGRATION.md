@@ -1,6 +1,6 @@
 # POSYDON Integration Guide
 
-**Status:** Planning — POSYDON adds a third population-synthesis baseline  
+**Status:** Planning, POSYDON adds a third population-synthesis baseline  
 **Last Updated:** December 4, 2025
 
 ---
@@ -69,11 +69,11 @@ Still TODO:
   2. Evolves binaries until DCO formation or termination.
   3. Writes summary statistics and detailed channels to HDF5.
 - CLI arguments:
-  - `--n-systems`
-  - `--output-dir`
-  - `--sparse`
-  - `--start-index/--end-index`
-  - `--test-run`
+ , `--n-systems`
+ , `--output-dir`
+ , `--sparse`
+ , `--start-index/--end-index`
+ , `--test-run`
 - Metadata handling identical to COMPAS/COSMIC (JSON shards + merged log).
 
 > **Status:** The module now wraps `posydon-run-grid` via a CLI args template.
@@ -117,18 +117,18 @@ POSYDON grid file. Use `--start-index/--end-index` to shard work across AWS.
 ## 4. Validation Checklist
 
 1. **Smoke Tests**
-   - [ ] 3 × 100-system runs complete locally in <10 minutes.
-   - [ ] HDF5 outputs match schema (validated with `tests/integration`).
+  , [ ] 3 × 100-system runs complete locally in <10 minutes.
+  , [ ] HDF5 outputs match schema (validated with `tests/integration`).
 
 2. **Performance Benchmarks**
-   - Target 10k-system runtime: <1 hour on c7a.8xlarge (estimate; update once
+  , Target 10k-system runtime: <1 hour on c7a.8xlarge (estimate; update once
      measured).
-   - Profile key bottlenecks (interpolation vs. binary evolution).
+  , Profile key bottlenecks (interpolation vs. binary evolution).
 
 3. **Scientific Consistency**
-   - Compare mass, spin, and delay-time distributions against COMPAS/COSMIC for
+  , Compare mass, spin, and delay-time distributions against COMPAS/COSMIC for
      overlapping hyperparameters.
-   - Document any systematic offsets in `docs/results/posydon_vs_compas.md`.
+  , Document any systematic offsets in `docs/results/posydon_vs_compas.md`.
 
 ---
 

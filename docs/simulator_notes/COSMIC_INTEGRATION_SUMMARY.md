@@ -1,4 +1,4 @@
-# COSMIC Integration - Implementation Summary
+# COSMIC Integration, Implementation Summary
 
 **Date**: November 26, 2025  
 **Status**: COMPLETE AND OPERATIONAL
@@ -53,11 +53,11 @@ Added sections for:
 
 ### 5. Documentation
 **New Files**:
-- `docs/simulator_notes/COSMIC_INTEGRATION.md` - Complete usage guide (240 lines)
-- `docs/simulator_notes/COSMIC_INTEGRATION_SUMMARY.md` - This file
+- `docs/simulator_notes/COSMIC_INTEGRATION.md`, Complete usage guide (240 lines)
+- `docs/simulator_notes/COSMIC_INTEGRATION_SUMMARY.md`, This file
 
 **Updated Files**:
-- `README.md` - Added COSMIC sections and links
+- `README.md`, Added COSMIC sections and links
 - Updated multi-code ensemble instructions
 - Added status indicators
 
@@ -71,7 +71,7 @@ You can now quantify model systematics by comparing COMPAS vs COSMIC:
 # Example: Compare DCO merger rates
 compas_rate = calculate_rate(compas_ensemble)
 cosmic_rate = calculate_rate(cosmic_ensemble)
-epistemic_uncertainty = abs(compas_rate - cosmic_rate)
+epistemic_uncertainty = abs(compas_rate, cosmic_rate)
 ```
 
 ### Falsification Testing
@@ -150,8 +150,8 @@ configs/
     └── pipeline/default_config.yaml  # UPDATED with multi-code sections
 docs/
 └── simulator_notes/
-    ├── COSMIC_INTEGRATION.md        # NEW - 240 lines
-    └── COSMIC_INTEGRATION_SUMMARY.md# NEW - this file
+    ├── COSMIC_INTEGRATION.md        # NEW, 240 lines
+    └── COSMIC_INTEGRATION_SUMMARY.md# NEW, this file
 ```
 
 **Total new code**: ~900 lines of thoroughly commented Python  

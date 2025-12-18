@@ -1,6 +1,6 @@
 # POSYDON Integration Status
 
-**Status:** WIRED — generator integrated into UnifiedEnsembleGenerator  
+**Status:** WIRED, generator integrated into UnifiedEnsembleGenerator  
 **Last Updated:** December 4, 2025
 
 ---
@@ -28,7 +28,7 @@ of legacy session-based APIs.
 - [DONE] POSYDON v2.2.0 installed in editable mode under `simulators/posydon/posydon/`.
 - [DONE] CLI wrapper at `pipelines/ensemble_generation/posydon/generate_ensemble.py`
   that interfaces with `posydon-run-grid`.
-- [DONE] Wired into `UnifiedEnsembleGenerator` - can be invoked via multi-code interface.
+- [DONE] Wired into `UnifiedEnsembleGenerator`, can be invoked via multi-code interface.
 - [PLANNED] Requires POSYDON interpolation grids (HMS-HMS, CO-HeMS, etc.) downloaded via
   `posydon-setup-pipeline` before production runs.
 
@@ -95,24 +95,24 @@ training run.
 ## Open Tasks
 
 1. **Environment provisioning**
-   - [x] Export `environment-posydon.yml` under `configs/infrastructure/`.
-   - [x] Document build steps in `docs/simulator_notes/POSYDON_INTEGRATION.md`.
+  , [x] Export `environment-posydon.yml` under `configs/infrastructure/`.
+  , [x] Document build steps in `docs/simulator_notes/POSYDON_INTEGRATION.md`.
 
 2. **Generator implementation**
-   - [x] Create CLI + driver stub (`generate_ensemble.py`).
-   - [ ] Port the `POSYDONPopulation` sampler into a reusable helper.
-   - [ ] Implement `generate_parameter_grid()` mirroring COMPAS/COSMIC flags.
-   - [ ] Support sparse-grid slicing (`--start-index/--end-index`) for AWS runs.
+  , [x] Create CLI + driver stub (`generate_ensemble.py`).
+  , [ ] Port the `POSYDONPopulation` sampler into a reusable helper.
+  , [ ] Implement `generate_parameter_grid()` mirroring COMPAS/COSMIC flags.
+  , [ ] Support sparse-grid slicing (`--start-index/--end-index`) for AWS runs.
 
 3. **Metadata + Outputs**
-   - [ ] Emit HDF5 tables using the shared schema (`/dcos`, `/metadata`).
-   - [ ] Write per-run JSON metadata shards compatible with
+  , [ ] Emit HDF5 tables using the shared schema (`/dcos`, `/metadata`).
+  , [ ] Write per-run JSON metadata shards compatible with
          `merge_metadata.py`.
 
 4. **Testing**
-   - [ ] Add unit tests under `tests/integration/posydon/` for parameter grid
+  , [ ] Add unit tests under `tests/integration/posydon/` for parameter grid
          generation and metadata validation.
-   - [ ] Extend the multi-code smoke test to include POSYDON.
+  , [ ] Extend the multi-code smoke test to include POSYDON.
 
 ---
 

@@ -10,21 +10,21 @@ Your COMPAS installation is fully functional and ready to use.
 - **Location**: `/Users/josephrodriguez/ASTROTHESIS/COMPAS/src/bin/COMPAS`
 - **Version**: v03.27.01
 - **Libraries**: 
-  - GSL v2.8
-  - Boost v1.85.0
-  - HDF5 v1.14.6
+ , GSL v2.8
+ , Boost v1.85.0
+ , HDF5 v1.14.6
 - **Status**: Built and tested successfully
 
 #### 2. Python Environment (compas_env)
 - **Python**: 3.11.14
 - **COMPAS Python Utils**: v0.0.1 (installed in editable mode)
 - **Key Dependencies**:
-  - h5py 3.15.1
-  - pandas 2.3.3
-  - matplotlib 3.10.8
-  - numpy 2.3.5
-  - scipy 1.16.3
-  - astropy 7.2.0
+ , h5py 3.15.1
+ , pandas 2.3.3
+ , matplotlib 3.10.8
+ , numpy 2.3.5
+ , scipy 1.16.3
+ , astropy 7.2.0
 - **Status**: All packages installed and verified
 
 ### How to Use
