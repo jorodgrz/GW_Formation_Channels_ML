@@ -15,31 +15,37 @@ A multi-code pipeline for **formation-channel inference** on **GWTC-4** using **
 ## Quick start
 
 ```bash
-# COSMIC quick local test
+# 1. Set up environment
+conda create -n gw_channels python=3.10 -y
+conda activate gw_channels
+pip install -r configs/infrastructure/requirements.txt && pip install -e .
+
+# 2. COSMIC quick local test
 python -m pipelines.ensemble_generation.cosmic.generate_ensemble \
   --test-run --sparse --n-systems 100 \
   --output-dir ./experiments/runs/cosmic_test
 
-# Train (default config)
+# 3. Train (default config)
 python -m pipelines.inference_and_falsification.train \
   --config configs/training/pipeline/default_config.yaml
 ```
 
 ## What you get if you run this
 
-- **Event-level posteriors:** `results/tables/event_level_posteriors.csv` (channel probabilities per GWTC-4 event)
-- **Disagreement maps:** `results/figures/disagreement_map_chirp_mass_metallicity.png` (where simulators diverge)
-- **Falsification summary:** `results/tables/falsification_summary.csv` (pass/fail diagnostics + MI metrics)
-- **Hyperparameter constraints:** Corner plots, posterior samples for α_CE, kicks, winds, metallicity scaling
-- **Channel fractions:** Population-level branching ratios with uncertainties
+- **Training artifacts:** `results/logs/` (configs, checkpoints, TensorBoard logs)
+- **Ensemble outputs:** `experiments/runs/<run_id>/` (HDF5 + metadata)
+- **(Full runs) Event-level posteriors:** `results/tables/event_level_posteriors.csv` (channel probabilities per GWTC-4 event)
+- **(Full runs) Disagreement maps:** `results/figures/disagreement_map_*.png` (where simulators diverge)
+- **(Full runs) Hyperparameter constraints:** Corner plots, posterior samples for α_CE, kicks, winds, metallicity scaling
+- **(WIP) Falsification summary:** `results/tables/falsification_summary.csv` (pass/fail diagnostics + MI metrics)
 
 ## Scientific Motivation
 
-**The question:** Can we reliably infer which astrophysical formation channels (isolated binaries, common-envelope evolution, dynamical capture, chemically homogeneous evolution) produced the black hole mergers in GWTC-4?
+**The question:** Can we reliably infer which astrophysical formation channels (isolated binary evolution including common-envelope phases, dynamical capture, chemically homogeneous evolution) produced the black hole mergers in GWTC-4?
 
 **The challenge:** Population-synthesis codes disagree on predictions even for the same input physics. If this disagreement exceeds what the data can resolve, channel inference is unreliable.
 
-**Our approach:** Treat code disagreement as structured and measurable. Use an ensemble of simulators (COMPAS, COSMIC, POSYDON) as priors, align their outputs with real data via domain adaptation, and apply simulation-based inference to recover posteriors. Build in tests that reject the model when systematics dominate.
+**Our approach:** Treat code disagreement as structured and measurable. Use an ensemble of simulators (COMPAS, COSMIC, POSYDON) as priors, align their outputs with real data via domain adaptation, and apply simulation-based inference to recover posteriors. Build in diagnostics that flag when systematics dominate and inference becomes unreliable.
 
 **Key contribution:** Cross-code epistemic uncertainty is not treated as noise to average out, but as a diagnostic signal localized in parameter space (e.g., "disagreement spikes at low metallicity + intermediate α_CE"). Models expose where they fail and why.
 
@@ -104,46 +110,12 @@ For detailed thesis, pillars (disagreement maps, code identifiability, failure t
 
 ## Key Features
 
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
-- **Multi-code ensemble:** COMPAS, COSMIC (POSYDON planned) generate independent populations; disagreement becomes a measurable diagnostic.
-- **Domain adaptation:** Aligns simulator outputs with GWTC-4 posteriors in latent space before inference.
-- **Neural density estimation:** Normalizing flows trained on simulated experiments; outputs p(θ | GWTC-4).
-- **Falsification tests:** Flags when model systematics prevent reliable inference (operational criteria in `ARCHITECTURE.md`).
-- **Interpretability outputs:** Disagreement maps, attention weights, and code-identifiability diagnostics are first-class artifacts in `results/`.
+- **Multi-code ensemble:** COMPAS and COSMIC generate independent populations; POSYDON (planned) provides a detailed-evolution benchmark. Cross-code disagreement is treated as a measurable diagnostic, not averaged away.
+- **Selection-function realism:** Cosmology + metallicity evolution, detector-frame conversion, and detectability weights to match catalog-level observables.
+- **Domain adaptation:** Latent-space alignment of simulated and GWTC-4 posteriors to reduce simulator-to-reality shift before inference.
+- **Simulation-based inference:** Neural density estimation (e.g., normalizing flows) to infer posteriors over hyperparameters and channel fractions.
+- **Falsification + diagnostics:** Operational criteria (defined in `docs/overview/ARCHITECTURE.md`) to flag when simulator systematics prevent reliable inference.
+- **Interpretability as an output:** Disagreement maps, code-identifiability probes, and attention/feature diagnostics are saved in `results/` as first-class artifacts.
 
 ## Why Multi-Code
 
@@ -156,13 +128,6 @@ Single-code studies can miss model systematics. Comparing COMPAS (rapid, high-vo
 3. Align simulated and real GW events in a shared latent space to reduce simulator–detector mismatch.
 4. Perform simulation-based inference to recover hyperparameters and formation-channel fractions.
 5. Quantify epistemic vs. aleatoric uncertainty and apply falsification tests when disagreement dominates observations.
-
-## Outputs
-
-- Posterior samples for key hyperparameters (e.g., α_CE, kick dispersion, winds, metallicity scalings) accounting for multi-code variance.
-- Branching fractions and per-event probabilities for formation channels, plus falsification verdicts.
-- Predictive distributions (mass, spin, redshift) and mutual-information diagnostics separating epistemic vs. aleatoric contributions.
-- Figures/tables for publication: corner plots, channel fraction tables, event-level channel posteriors, and falsification summaries.
 
 ---
 
@@ -182,7 +147,7 @@ Single-code studies can miss model systematics. Comparing COMPAS (rapid, high-vo
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.10+ (3.8 may work but 3.10 recommended)
 - COMPAS simulator
 - PyTorch
 - h5py
