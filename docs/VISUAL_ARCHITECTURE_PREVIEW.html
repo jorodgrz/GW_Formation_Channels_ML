@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ASTROTHESIS Visual Architecture</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { 
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f6f8fa;
+        }
+        h1 { color: #0969da; border-bottom: 3px solid #0969da; padding-bottom: 10px; }
+        h2 { color: #1f2328; margin-top: 40px; border-bottom: 1px solid #d0d7de; padding-bottom: 5px; }
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info {
+            background: #dff6dd;
+            border: 1px solid #34d058;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff8c5;
+            border: 1px solid #f9c513;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 85%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #d0d7de;
+        }
+        th {
+            background: #f6f8fa;
+            font-weight: 600;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌌 ASTROTHESIS: Multi-Code GW Formation Channel Inference</h1>
+    
+    <div class="info">
+        <strong>📊 Visual Architecture Dashboard</strong><br>
+        Interactive diagrams showing the complete pipeline architecture.<br>
+        <strong>Status:</strong> COMPAS ✅ | COSMIC ✅ | POSYDON ⏳ | Training Pipeline ✅
+    </div>
+
+    <h2>1. High-Level Pipeline Flow</h2>
+    <div class="mermaid">
+graph LR
+    A[Population Synthesis<br/>COMPAS/COSMIC/POSYDON] --> B[Selection Function<br/>LIGO/Virgo Detectability]
+    B --> C[Domain Adaptation<br/>Align Sim with Real Data]
+    C --> D[Neural SBI<br/>Density Estimation]
+    D --> E[Channel Inference<br/>IB/CE/CHE/Dynamical]
+    E --> F[Falsification Tests<br/>Epistemic/CE Tests]
+    F --> G[Results & Outputs<br/>Posteriors/Figures/Tables]
+    
+    style A fill:#e1f5ff
+    style D fill:#ffffb3
+    style F fill:#ffcccc
+    style G fill:#b3ffb3
+    </div>
+
+    <h2>2. Falsification Decision Tree</h2>
+    <div class="mermaid">
+graph TD
+    START[Run Full Inference] --> T1[Test 1: Epistemic Dominance]
+    
+    T1 --> T1A{MI_codes > sigma_obs<br/>for >50 percent events?}
+    T1A -->|YES| FAIL1[FAIL: Model Invalid<br/>Simulator disagreement dominates]
+    T1A -->|NO| PASS1[PASS: Epistemic under control]
+    
+    PASS1 --> T2[Test 2: CE Ineffectiveness]
+    
+    T2 --> T2A{rank_corr alpha_CE channels < 0.5?}
+    T2A -->|YES| FAIL2[FAIL: CE Hypothesis Falsified<br/>alpha_CE not key driver]
+    T2A -->|NO| PASS2[PASS: CE physics confirmed]
+    
+    FAIL1 --> ACT1[Action: Improve models<br/>Reconcile codes]
+    FAIL2 --> ACT2[Action: Re-examine channels<br/>Explore alternative physics]
+    PASS2 --> SUCCESS[SUCCESS: Valid Inference<br/>Report results]
+    
+    style FAIL1 fill:#ffcccc
+    style FAIL2 fill:#ffcccc
+    style PASS1 fill:#ccffcc
+    style PASS2 fill:#ccffcc
+    style SUCCESS fill:#b3ffb3
+    </div>
+
+    <h2>3. Neural Architecture Components</h2>
+    <div class="mermaid">
+graph TD
+    SIM[Simulated Events] --> ENC[Event Encoder<br/>Per-event embedding]
+    REAL[GWTC-4 Events] --> ENC
+    
+    ENC --> AGG[Population Aggregator<br/>Set-based Attention]
+    AGG --> ATT[Cross-Modal Attention<br/>Events ↔ theta]
+    
+    THETA[Hyperparameters theta] --> ATT
+    
+    ATT --> FLOW[Normalizing Flow<br/>Density Estimator]
+    
+    FLOW --> POST[Posterior p theta data]
+    ATT --> CHAN[Channel Classifier]
+    ENC --> DISC[Domain Discriminator]
+    
+    POST --> L1[Loss 1: -log p theta x]
+    CHAN --> L2[Loss 2: Channel Classification]
+    DISC --> L3[Loss 3: Domain Adaptation]
+    POST --> L4[Loss 4: Calibration]
+    
+    L1 --> TOTAL[Total Loss]
+    L2 --> TOTAL
+    L3 --> TOTAL
+    L4 --> TOTAL
+    
+    style POST fill:#b3ffb3
+    style CHAN fill:#b3ffb3
+    style TOTAL fill:#ffb3b3
+    </div>
+
+    <h2>4. Training Loop</h2>
+    <div class="mermaid">
+graph TD
+    START([Start Training]) --> LOAD[Load Config & Data]
+    LOAD --> INIT[Initialize Models]
+    INIT --> EPOCH[Epoch Loop]
+    
+    EPOCH --> BATCH[Sample Mini-Batch]
+    BATCH --> FWD[Forward Pass]
+    FWD --> LOSS[Compute Losses]
+    LOSS --> BACK[Backward Pass]
+    BACK --> LOG{Log?}
+    
+    LOG -->|Yes| TB[TensorBoard]
+    LOG -->|No| CHECK
+    TB --> CHECK{Checkpoint?}
+    
+    CHECK -->|Yes| SAVE[Save Checkpoint]
+    CHECK -->|No| DONE
+    SAVE --> DONE{More Epochs?}
+    
+    DONE -->|Yes| EPOCH
+    DONE -->|No| VAL[Validation]
+    VAL --> INFER[Inference]
+    INFER --> FALSE[Falsification Tests]
+    FALSE --> EXPORT[Export Results]
+    EXPORT --> END([End])
+    
+    style START fill:#b3d9ff
+    style END fill:#b3ffb3
+    style FALSE fill:#ffb3b3
+    </div>
+
+    <h2>5. Uncertainty Decomposition</h2>
+    <div class="mermaid">
+graph TD
+    C1[COMPAS Predictions] --> MI[Compute Mutual Information<br/>I code observables]
+    C2[COSMIC Predictions] --> MI
+    C3[POSYDON Predictions] --> MI
+    
+    MI --> STRAT[Stratified MI<br/>by theta by z by mass]
+    STRAT --> PHASE[Disagreement Phase Space]
+    
+    C1 --> HEAD[Code ID Head<br/>p code observables]
+    C2 --> HEAD
+    C3 --> HEAD
+    
+    HEAD --> FEAT[Feature Importance]
+    
+    PHASE --> EPIST[Epistemic Uncertainty<br/>Model Disagreement]
+    FEAT --> EPIST
+    
+    OBS[GWTC-4 Posteriors] --> ALEAT[Aleatoric Uncertainty<br/>Data Noise]
+    
+    EPIST --> TEST{MI > sigma_obs?}
+    TEST -->|YES| REJECT[REJECT MODEL]
+    TEST -->|NO| ACCEPT[ACCEPT MODEL]
+    
+    style REJECT fill:#ffcccc
+    style ACCEPT fill:#ccffcc
+    </div>
+
+    <h2>6. Data Flow Sequence</h2>
+    <div class="mermaid">
+sequenceDiagram
+    participant Grid as Hyperparameter Grid
+    participant Sim as Population Synthesis
+    participant Sel as Selection Function
+    participant Align as Domain Adaptation
+    participant SBI as Neural SBI
+    participant Test as Falsification
+    participant Out as Outputs
+    
+    Grid->>Sim: Sample theta
+    Sim->>Sel: Binary populations
+    Sel->>Align: Synthetic GW catalog
+    Note over Align: Load GWTC-4
+    Align->>SBI: Aligned latents
+    SBI->>SBI: Train models
+    SBI->>Out: Posteriors & channels
+    SBI->>Test: Compute MI
+    Test->>Out: Pass/Fail & diagnostics
+    </div>
+
+    <h2>Component Status</h2>
+    <table>
+        <tr>
+            <th>Component</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>COMPAS Integration</td>
+            <td>✅ Operational</td>
+            <td>AWS setup complete, production grid pending</td>
+        </tr>
+        <tr>
+            <td>COSMIC Integration</td>
+            <td>✅ Operational</td>
+            <td>Fast local prototyping, sparse grids generated</td>
+        </tr>
+        <tr>
+            <td>POSYDON Integration</td>
+            <td>⏳ In Progress</td>
+            <td>CLI wrapper ready, awaiting grid download</td>
+        </tr>
+        <tr>
+            <td>Multi-Code Generator</td>
+            <td>✅ Operational</td>
+            <td>Unified runner for COMPAS + COSMIC</td>
+        </tr>
+        <tr>
+            <td>GWTC-4 Loader</td>
+            <td>✅ Operational</td>
+            <td>Posterior samples ingested</td>
+        </tr>
+        <tr>
+            <td>Domain Adaptation</td>
+            <td>✅ Implemented</td>
+            <td>Adversarial + MMD alignment</td>
+        </tr>
+        <tr>
+            <td>Neural SBI</td>
+            <td>✅ Functional</td>
+            <td>End-to-end training with checkpointing</td>
+        </tr>
+        <tr>
+            <td>Falsification Tests</td>
+            <td>✅ Implemented</td>
+            <td>Test 1 & 2 criteria coded</td>
+        </tr>
+        <tr>
+            <td>Production Ensembles</td>
+            <td>⏳ In Progress</td>
+            <td>COMPAS grid on AWS pending deployment</td>
+        </tr>
+        <tr>
+            <td>Full Inference Run</td>
+            <td>⏳ Pending</td>
+            <td>Awaiting production ensemble data</td>
+        </tr>
+    </table>
+
+    <h2>Key Architectural Layers</h2>
+    <table>
+        <tr>
+            <th>Layer</th>
+            <th>Purpose</th>
+            <th>Key Technologies</th>
+        </tr>
+        <tr>
+            <td><strong>Layer 1:</strong> Population Synthesis</td>
+            <td>Generate binary evolution populations with varied physics</td>
+            <td>COMPAS (C++), COSMIC (Python), POSYDON (Python+MESA)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 2:</strong> Selection Function</td>
+            <td>Apply LIGO/Virgo detectability, cosmology, selection effects</td>
+            <td>NumPy, Astropy, Selection models</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 3:</strong> Real Data Ingestion</td>
+            <td>Load GWTC-4 posteriors and event metadata</td>
+            <td>h5py, Pandas, GWTC-4 catalog</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 4:</strong> Domain Adaptation</td>
+            <td>Align simulated and real data in latent space</td>
+            <td>PyTorch, Adversarial networks, MMD loss</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 5:</strong> Neural SBI</td>
+            <td>Learn posterior p(theta | data) via density estimation</td>
+            <td>PyTorch, Normalizing Flows (nflows), Transformers</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 6:</strong> Channel Inference</td>
+            <td>Classify formation channels (IB/CE/CHE/Dynamical)</td>
+            <td>Multi-head classifier, Softmax outputs</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 7:</strong> Uncertainty Decomposition</td>
+            <td>Separate epistemic (model) vs aleatoric (data) uncertainty</td>
+            <td>Mutual Information, Cross-code variance</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 8:</strong> Falsification</td>
+            <td>Test model validity and hypothesis consistency</td>
+            <td>MI tests, Attention analysis, Correlation metrics</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 9:</strong> Outputs</td>
+            <td>Generate posteriors, figures, tables, metrics</td>
+            <td>Matplotlib, corner.py, LaTeX tables, TensorBoard</td>
+        </tr>
+    </table>
+
+    <div class="warning" style="margin-top: 40px;">
+        <strong>🔬 Key Novelties:</strong>
+        <ul>
+            <li><strong>Multi-Simulator Ensemble</strong> - Treats code diversity as structured epistemic uncertainty</li>
+            <li><strong>Domain Adaptation</strong> - Explicit alignment of simulations with real LIGO/Virgo posteriors</li>
+            <li><strong>Physics-Informed Neural SBI</strong> - Cross-attention for interpretability</li>
+            <li><strong>Built-In Falsification</strong> - Explicit pass/fail criteria with ranked failure modes</li>
+            <li><strong>Disagreement Phase Space</strong> - Maps where and why simulators diverge</li>
+        </ul>
+    </div>
+
+    <div class="info" style="margin-top: 20px;">
+        <strong>📍 Documentation:</strong><br>
+        Full markdown version: <code>docs/VISUAL_ARCHITECTURE.md</code><br>
+        Scientific context: <code>docs/overview/PIPELINE_README.md</code>, <code>docs/overview/ARCHITECTURE.md</code><br>
+        Operations: <code>docs/operations/SETUP.md</code>, <code>docs/operations/QUICKSTART.md</code>
+    </div>
+
+</body>
+</html>
